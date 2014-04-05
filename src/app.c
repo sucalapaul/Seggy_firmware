@@ -69,6 +69,9 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 #include "peripheral/tmr/plib_tmr.h"
 #include "peripheral/int/plib_int.h"
 
+/* Drivers */
+#include "driver/usart/drv_usart.h"
+
 // *****************************************************************************
 // *****************************************************************************
 // Section: File Scope or Global Constants
