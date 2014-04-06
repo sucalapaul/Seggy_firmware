@@ -47,6 +47,9 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 // *****************************************************************************
 // *****************************************************************************
 #include "system/int/sys_int.h"
+#include "system_config.h"
+#include "system_definitions.h"
+#include "app.h"
 
 
 // ****************************************************************************
@@ -134,6 +137,73 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
     for the specific configuration of an application.
  */
 
+// *****************************************************************************
+// *****************************************************************************
+// Section: Driver Initialization Data
+// *****************************************************************************
+// *****************************************************************************
+
+/* Structure to hold the application's system data. */
+APP_DRV_OBJECTS appDrvObjects;
+
+// *****************************************************************************
+/* USART Driver Initialization Data
+
+  Summary:
+    Defines the USART driver's initialization data
+
+  Description
+    This structure defines the USART driver's initialization data, passed into
+    the driver's initialization routine ("DRV_USART_Initialize") by the
+    system's ("SYS_Initialize") routine.
+
+  Remarks:
+    None.
+*/
+
+DRV_USART_INIT drvUSARTInit =
+{
+    /* System module initialization */
+    .moduleInit = {0} ,
+
+    /* Identifies USART hardware module (PLIB-level) ID */
+    .usartID = SYS_USART_ID ,
+
+     /* Operation Modes of the driver */
+    .operationMode = DRV_USART_OPERATION_MODE_RS232 ,
+
+    /* Flags for the usart initialization */
+    .initFlags = 0 ,
+
+    /* Control the line control configuration */
+    .lineControlMode = DRV_USART_LINE_CONTROL_MODE_8NONE1 ,
+
+    /* Baud Rate value to be used, if not using auto baud */
+    .brgValue = APP_UART_BAUDRATE ,
+
+    /* Operation mode initialization data */
+    .operationModeInit = {{0}},
+
+    /* Handshake Mode */
+    .handShakeMode = DRV_USART_HANDSHAKE_MODE_NONE ,
+
+    /* Interrupt Source for TX Interrupt */
+    .txInterruptSource = INT_SOURCE_USART_1_TRANSMIT ,
+
+    /* Interrupt Source for RX Interrupt */
+    .rxInterruptSource = INT_SOURCE_USART_1_RECEIVE ,
+
+    /* Interrupt Source for Error Interrupt */
+    .errorInterruptSource = INT_SOURCE_USART_1_ERROR,
+
+    /* Receive Queue length */
+    .rxQueueSize          = 3,
+
+    /* Transmit Queue length */
+    .txQueueSize          = 3
+};
+
+
 void SYS_Initialize ( void * data )
 {
     /* Configure the hardware for maximum performance. */
@@ -146,12 +216,23 @@ void SYS_Initialize ( void * data )
     /* Initializethe interrupt system  */
     SYS_INT_Initialize();
 
+    /* set priority for USART interrupt source */
+    SYS_INT_VectorPrioritySet(INT_VECTOR_UART1, INT_PRIORITY_LEVEL3);
+
+    /* set sub-priority for USART interrupt source */
+    SYS_INT_VectorSubprioritySet(INT_VECTOR_UART1, INT_SUBPRIORITY_LEVEL3);
+
      /* set priority for Timer 5 interrupt source */
     /* Same as configMAX_SYSCALL_INTERRUPT_PRIORITY */
     SYS_INT_VectorPrioritySet(INT_VECTOR_T5, INT_PRIORITY_LEVEL3);
     
     /* set sub-priority for Timer 5 interrupt source */
     SYS_INT_VectorSubprioritySet(INT_VECTOR_T5, INT_SUBPRIORITY_LEVEL3);
+
+
+    /* Inialize the system */
+    appDrvObjects.drvUSARTObject = DRV_USART_Initialize(SYS_USART_DRIVER_INDEX,
+            (SYS_MODULE_INIT *)&drvUSARTInit );
 
 }
 

@@ -56,6 +56,21 @@ extern "C" {
 #define DRV_USART_CONFIG_BLOCK_DEVICE_MODE
 
 
+// *****************************************************************************
+// *****************************************************************************
+// Section: Application Configuration
+// *****************************************************************************
+// *****************************************************************************
+
+/* Define the size of the application's message buffer. */
+#define APP_BUFFER_SIZE         60
+#define APP_UART_BAUDRATE       9600
+#define APP_NO_OF_BYTES_TO_READ 1
+#define APP_ESC_MSG             0x1B
+
+
+    
+
 #ifdef	__cplusplus
 }
 #endif

@@ -8,10 +8,12 @@
         <logicalFolder name="f1" displayName="system_config" projectFiles="true">
           <logicalFolder name="f2" displayName="pic32mx_sk" projectFiles="true">
             <itemPath>D:/Dropbox/segway/Firmware/src/system_config/pic32mx_sk/system_config.h</itemPath>
+            <itemPath>D:/Dropbox/segway/Firmware/src/system_config/pic32mx_sk/system_definitions.h</itemPath>
           </logicalFolder>
           <logicalFolder name="f1" displayName="pic32mz_sk" projectFiles="true">
           </logicalFolder>
         </logicalFolder>
+        <itemPath>D:/Dropbox/segway/Firmware/src/app.h</itemPath>
       </logicalFolder>
       <logicalFolder name="f3" displayName="bsp" projectFiles="true">
         <logicalFolder name="f1" displayName="pic32mz_sk" projectFiles="true">
@@ -21,10 +23,35 @@
       <logicalFolder name="f4" displayName="framework" projectFiles="true">
         <logicalFolder name="f1" displayName="driver" projectFiles="true">
           <logicalFolder name="f1" displayName="usart" projectFiles="true">
-            <itemPath>../../../../microchip/harmony/v0_70_01b/framework/driver/usart/drv_usart.h</itemPath>
+            <itemPath>D:/microchip/harmony/v0_70_01b/framework/driver/usart/drv_usart.h</itemPath>
+            <itemPath>D:/microchip/harmony/v0_70_01b/framework/driver/usart/drv_usart_mapping.h</itemPath>
           </logicalFolder>
           <itemPath>D:/microchip/harmony/v0_70_01b/framework/driver/driver.h</itemPath>
           <itemPath>D:/microchip/harmony/v0_70_01b/framework/driver/driver_common.h</itemPath>
+        </logicalFolder>
+        <logicalFolder name="fperipheral" displayName="peripheral" projectFiles="true">
+          <logicalFolder name="fint" displayName="int" projectFiles="true">
+            <itemPath>D:/microchip/harmony/v0_70_01b\/framework/peripheral/int/plib_int.h</itemPath>
+          </logicalFolder>
+          <logicalFolder name="fports" displayName="ports" projectFiles="true">
+            <itemPath>D:/microchip/harmony/v0_70_01b\/framework/peripheral/ports/plib_ports.h</itemPath>
+          </logicalFolder>
+        </logicalFolder>
+        <logicalFolder name="fsystem" displayName="system" projectFiles="true">
+          <logicalFolder name="fcommon" displayName="common" projectFiles="true">
+            <itemPath>D:/microchip/harmony/v0_70_01b\framework/system/system.h</itemPath>
+            <itemPath>D:/microchip/harmony/v0_70_01b\framework/system/common/sys_buffer.h</itemPath>
+            <itemPath>D:/microchip/harmony/v0_70_01b\framework/system/common/sys_common.h</itemPath>
+            <itemPath>D:/microchip/harmony/v0_70_01b\framework/system/common/sys_module.h</itemPath>
+            <itemPath>D:/microchip/harmony/v0_70_01b\framework/system/common/sys_queue.h</itemPath>
+          </logicalFolder>
+          <logicalFolder name="fint" displayName="int" projectFiles="true">
+            <logicalFolder name="fsrc" displayName="src" projectFiles="true">
+              <itemPath>D:/microchip/harmony/v0_70_01b\framework/system/int/src/sys_int_private.h</itemPath>
+            </logicalFolder>
+            <itemPath>D:/microchip/harmony/v0_70_01b\framework/system/int/sys_int.h</itemPath>
+            <itemPath>D:/microchip/harmony/v0_70_01b\framework/system/int/sys_int_mapping.h</itemPath>
+          </logicalFolder>
         </logicalFolder>
       </logicalFolder>
       <logicalFolder name="f2" displayName="FreeRTOS" projectFiles="true">
@@ -43,6 +70,7 @@
             <itemPath>../src/system_config/pic32mx_sk/system_init.c</itemPath>
             <itemPath>../src/system_config/pic32mx_sk/system_interrupt.S</itemPath>
             <itemPath>../src/system_config/pic32mx_sk/system_tasks.c</itemPath>
+            <itemPath>D:/Dropbox/segway/Firmware/src/system_int.c</itemPath>
           </logicalFolder>
         </logicalFolder>
         <itemPath>../src/main.c</itemPath>
@@ -70,7 +98,13 @@
           </logicalFolder>
         </logicalFolder>
         <logicalFolder name="f2" displayName="system" projectFiles="true">
+          <logicalFolder name="fcommon" displayName="common" projectFiles="true">
+            <itemPath>D:/microchip/harmony/v0_70_01b\framework/system/common/sys_buffer.c</itemPath>
+            <itemPath>D:/microchip/harmony/v0_70_01b\framework/system/common/sys_queue.c</itemPath>
+          </logicalFolder>
           <logicalFolder name="f1" displayName="int" projectFiles="true">
+            <logicalFolder name="fsrc" displayName="src" projectFiles="true">
+            </logicalFolder>
             <itemPath>D:/microchip/harmony/v0_70_01b/framework/system/int/src/sys_int_pic32.c</itemPath>
           </logicalFolder>
         </logicalFolder>
@@ -96,10 +130,8 @@
   </logicalFolder>
   <sourceRootList>
     <Elem>D:\Dropbox\segway\Firmware\src</Elem>
-    <Elem>D:/microchip/harmony/v0_70_01b/framework/system/int/src</Elem>
-    <Elem>D:/microchip/harmony/v0_70_01b/framework/peripheral/int/src</Elem>
     <Elem>D:/microchip/harmony/v0_70_01b/third_party/rtos/FreeRTOS/Source</Elem>
-    <Elem>D:\microchip\harmony\v0_70_01b\framework\driver</Elem>
+    <Elem>D:/microchip/harmony/v0_70_01b/framework</Elem>
   </sourceRootList>
   <projectmakefile>Makefile</projectmakefile>
   <confs>
@@ -117,6 +149,7 @@
       <compileType>
         <linkerTool>
           <linkerLibItems>
+            <linkerLibFileItem>D:/microchip/harmony/v0_70_01b\/bin/framework/peripheral/PIC32MX795F512L_peripherals.a</linkerLibFileItem>
           </linkerLibItems>
         </linkerTool>
         <loading>
@@ -141,7 +174,7 @@
         <property key="enable-unroll-loops" value="false"/>
         <property key="exclude-floating-point" value="false"/>
         <property key="extra-include-directories"
-                  value="D:\microchip\harmony\v0_70_01b\framework;../src;../src/system_config/pic32mx_sk;../src/app_bsp/pic32mx_sk;D:\microchip\harmony\v0_70_01b\third_party\rtos\FreeRTOS\Source\include;D:\microchip\harmony\v0_70_01b\third_party\rtos\FreeRTOS\Source\portable\MPLAB\PIC32MX"/>
+                  value=".;D:\microchip\harmony\v0_70_01b\framework;D:\microchip\harmony\v0_70_01b\framework\system;../src;../src/system_config/pic32mx_sk;../src/app_bsp/pic32mx_sk;D:\microchip\harmony\v0_70_01b\third_party\rtos\FreeRTOS\Source\include;D:\microchip\harmony\v0_70_01b\third_party\rtos\FreeRTOS\Source\portable\MPLAB\PIC32MX"/>
         <property key="generate-16-bit-code" value="false"/>
         <property key="generate-micro-compressed-code" value="false"/>
         <property key="isolate-each-function" value="false"/>
@@ -151,7 +184,7 @@
         <property key="post-instruction-scheduling" value="default"/>
         <property key="pre-instruction-scheduling" value="default"/>
         <property key="preprocessor-macros"
-                  value="INLINE_API=&quot;static inline&quot;;INLINE=&quot;static inline&quot;"/>
+                  value="INLINE_API=&quot;static inline&quot;;INLINE=&quot;static inline&quot;;USE_CRYPTO_HW"/>
         <property key="strict-ansi" value="false"/>
         <property key="support-ansi" value="false"/>
         <property key="use-cci" value="false"/>
@@ -166,7 +199,7 @@
         <property key="extra-include-directories-for-assembler"
                   value="../src;D:\microchip\harmony\v0_70_01b\third_party\rtos\FreeRTOS\Source\portable\MPLAB\PIC32MX"/>
         <property key="extra-include-directories-for-preprocessor"
-                  value="../src;D:\microchip\harmony\v0_70_01b\third_party\rtos\FreeRTOS\Source\portable\MPLAB\PIC32MX;../src/system_config/pic32mx_sk"/>
+                  value="../src;D:\microchip\harmony\v0_70_01b\third_party\rtos\FreeRTOS\Source\portable\MPLAB\PIC32MX;../src/system_config/pic32mx_sk;D:\microchip\harmony\v0_70_01b\framework"/>
         <property key="false-conditionals" value="false"/>
         <property key="keep-locals" value="false"/>
         <property key="list-assembly" value="false"/>
@@ -239,6 +272,7 @@
         <property key="ToolFirmwareFilePath"
                   value="Press to browse for a specific firmware version"/>
         <property key="ToolFirmwareOption.UseLatestFirmware" value="true"/>
+        <property key="firmware.download.all" value="false"/>
         <property key="memories.bootflash" value="true"/>
         <property key="memories.configurationmemory" value="true"/>
         <property key="memories.eeprom" value="true"/>

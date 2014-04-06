@@ -120,6 +120,14 @@ static void QueueSendTask( void *pvParameters );
 static void ISRBlockTask( void *pvParameters );
 
 
+/* Application Data
+
+  Summary:
+    Holds application data
+ */
+APP_DATA appData;
+
+
 /* The timer 5 interrupt handler.  As this interrupt uses the FreeRTOS assembly
 entry point the IPL setting in the following function prototype has no effect. */
 void __attribute__( (interrupt(ipl3), vector(_TIMER_5_VECTOR))) vT5InterruptWrapper( void );
@@ -158,6 +166,12 @@ static const APPTaskParameter_t APPTaskParameters = {2 /* Toggle LED */, 31250 /
  */
 void APP_Initialize( void )
 {
+
+        /* Prepare a buffer object for transfer using the USART driver.  */
+        appData.bufferObject.buffer     = appData.buffer;
+        appData.bufferObject.bufferSize = min(APP_BUFFER_SIZE, strlen(appData.buffer));
+        appData.bufferObject.flags      = DRV_USART_BUFFER_FLAG_WRITE;
+
 	/* Create the queue. */
 	xQueue = xQueueCreate( QUEUE_LENGTH, sizeof( unsigned long ) );
 
@@ -332,6 +346,15 @@ unsigned long ulReceivedValue;
  */
 static void ISRBlockTask( void* pvParameters )
 {
+        /* Status of USART driver */
+        DRV_USART_CLIENT_STATUS usartStatus;
+
+        /* Status of buffer submitted to USART */
+        DRV_USART_BUFFER_STATUS bufferStatus;
+
+        appData.usartHandle = DRV_USART_Open(SYS_USART_DRIVER_INDEX,
+            DRV_IO_INTENT_READWRITE);
+
       /* local variables marked as volatile so the compiler does not optimize them away */
         APPTaskParameter_t *pxTaskParameter;
        pxTaskParameter = (APPTaskParameter_t *) pvParameters;
@@ -356,6 +379,28 @@ static void ISRBlockTask( void* pvParameters )
             xSemaphoreTake( xBlockSemaphore, portMAX_DELAY );
 
             BSP_ToggleLED( pxTaskParameter->usLEDNumber );
+
+            strcpy(appData.buffer, "Salut ");
+            /* Update Buffer Size */
+            appData.bufferObject.bufferSize = 6;
+
+            usartStatus = DRV_USART_ClientStatus( appData.usartHandle );
+            if ( usartStatus == DRV_USART_CLIENT_STATUS_READY )
+            {
+                /* Submit buffer to USART */
+                appData.usartBufferHandle = DRV_USART_BufferAdd(
+                        appData.usartHandle, &appData.bufferObject);
+
+                if ( appData.usartBufferHandle != DRV_HANDLE_INVALID )
+                {
+                    /* Buffer is accepted. Driver will transmit. */
+                    //appData.state = APP_WAIT_FOR_DONE;
+                }
+                else
+                {
+                    //appData.state = APP_ERROR;
+                }
+            }
 
         }
 }
