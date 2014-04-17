@@ -24,6 +24,8 @@ extern "C" {
 #define SYS_CLK_PeripheralClockGet(i)       SYS_CLK_FREQUENCY   // 1:1
 #define SYS_CLK_PeriphBusFreqGet(i)         SYS_CLK_FREQUENCY   // 1:1
 
+#define PB_FREQUENCY       (40000000ul)
+
 // *****************************************************************************
 // *****************************************************************************
 // Section: System Services Configuration
@@ -54,6 +56,13 @@ extern "C" {
 #define DRV_USART_CONFIG_BYTE_Q_SIZE_TX         1
 #define DRV_USART_CONFIG_BYTE_Q_SIZE_RX         1
 #define DRV_USART_CONFIG_BLOCK_DEVICE_MODE
+
+
+#define ADXL362_CS_PORT_ID      PORT_CHANNEL_D
+#define ADXL362_CS_PORT_PIN     PORTS_BIT_POS_11
+#define ADXL362_SPI_MODULE_ID   SPI_ID_2
+#define ADXL362_SPI_BAUD        (1000000ul)
+
 
 
 // *****************************************************************************

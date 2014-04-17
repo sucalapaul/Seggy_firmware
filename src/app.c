@@ -355,6 +355,8 @@ static void ISRBlockTask( void* pvParameters )
         appData.usartHandle = DRV_USART_Open(SYS_USART_DRIVER_INDEX,
             DRV_IO_INTENT_READWRITE);
 
+        xl362Init();
+
       /* local variables marked as volatile so the compiler does not optimize them away */
         APPTaskParameter_t *pxTaskParameter;
        pxTaskParameter = (APPTaskParameter_t *) pvParameters;
@@ -373,10 +375,13 @@ static void ISRBlockTask( void* pvParameters )
         /* Start the timer. */
         PLIB_TMR_Start(TMR_ID_5);
 
+        unsigned char id;
         for( ;; )
         {
             /* block on the binary semaphore given by an ISR */
             xSemaphoreTake( xBlockSemaphore, portMAX_DELAY );
+
+            xl362Read(1, XL362_PARTID, &id);
 
             BSP_ToggleLED( pxTaskParameter->usLEDNumber );
 

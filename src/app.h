@@ -16,6 +16,8 @@ extern "C" {
 #include "system_config.h"
 #include "system_definitions.h"
 #include "system/system.h"
+#include "system/ports/sys_ports.h"
+#include "adxl362/adxl362_io.h"
 
     
 // *****************************************************************************
