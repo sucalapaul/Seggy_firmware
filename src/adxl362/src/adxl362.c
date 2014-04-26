@@ -152,5 +152,35 @@ void xl362Write(unsigned char count, unsigned char regaddr, unsigned char *buf)
 
 void xl362RawDataRead(ADXL362_RAW_DATA * raw_data)
 {
+    uint8_t i;
+    unsigned char buf[10];
+    ADXL362_SPI_CS_SELECT();
 
+    // Write Command, Address and dummy byte
+    PLIB_SPI_BufferWrite(ADXL362_SPI_MODULE_ID, XL362_REG_READ);
+    PLIB_SPI_BufferWrite(ADXL362_SPI_MODULE_ID, XL362_XDATAL);
+
+    // Write dummy bytes, in order to receive X, Y, Z and Temperature
+    // in burst mode
+    for (i = 0; i < 8; i++)
+    {
+        PLIB_SPI_BufferWrite(ADXL362_SPI_MODULE_ID, 0);
+    }
+
+    // Wait until receive buffer got all data
+    while ( PLIB_SPI_FIFOCountGet(ADXL362_SPI_MODULE_ID, SPI_FIFO_TYPE_RECEIVE) < 10 );
+
+    // Read all response from SPI buffer
+    for (i = 0; i < 10; i++)
+    {
+        buf[i] = PLIB_SPI_BufferRead(ADXL362_SPI_MODULE_ID);
+    }
+
+    // Convert sign extended data to int
+    raw_data->x = ( (int16_t)buf[3] << 8 ) + buf[2];
+    raw_data->y = ( (int16_t)buf[5] << 8 ) + buf[4];
+    raw_data->z = ( (int16_t)buf[7] << 8 ) + buf[6];
+    raw_data->t = ( (int16_t)buf[9] << 8 ) + buf[8];
+    
+    ADXL362_SPI_CS_DESELECT();
 }

@@ -43,3 +43,4 @@ funclist
 nbproject/Makefile-*
 disassembly/
 *.map
+*.orig

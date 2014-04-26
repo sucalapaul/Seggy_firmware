@@ -352,6 +352,8 @@ static void ISRBlockTask( void* pvParameters )
         /* Status of buffer submitted to USART */
         DRV_USART_BUFFER_STATUS bufferStatus;
 
+        ADXL362_RAW_DATA raw_data;
+
         appData.usartHandle = DRV_USART_Open(SYS_USART_DRIVER_INDEX,
             DRV_IO_INTENT_READWRITE);
 
@@ -381,14 +383,16 @@ static void ISRBlockTask( void* pvParameters )
             /* block on the binary semaphore given by an ISR */
             xSemaphoreTake( xBlockSemaphore, portMAX_DELAY );
 
-            xl362RegisterRead(XL362_XDATA8, &id);
+            //xl362RegisterRead(XL362_XDATAH, &id);
+            xl362RawDataRead ( &raw_data );
 
             BSP_ToggleLED( pxTaskParameter->usLEDNumber );
 
             //strcpy(appData.buffer, "Salut ");
+            sprintf(appData.buffer, " x: %d; y: %d; z: %d; t: %d\r\n", raw_data.x, raw_data.y, raw_data.z, raw_data.t);
             appData.buffer[0] = id;
             /* Update Buffer Size */
-            appData.bufferObject.bufferSize = 1;
+            appData.bufferObject.bufferSize = strlen(appData.buffer);
 
             usartStatus = DRV_USART_ClientStatus( appData.usartHandle );
             if ( usartStatus == DRV_USART_CLIENT_STATUS_READY )
