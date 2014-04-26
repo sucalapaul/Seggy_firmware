@@ -5,6 +5,9 @@
                    displayName="Header Files"
                    projectFiles="true">
       <logicalFolder name="f1" displayName="app" projectFiles="true">
+        <logicalFolder name="f2" displayName="imu" projectFiles="true">
+          <itemPath>../src/imu/imu.h</itemPath>
+        </logicalFolder>
         <logicalFolder name="f1" displayName="system_config" projectFiles="true">
           <logicalFolder name="f2" displayName="pic32mx_sk" projectFiles="true">
             <itemPath>D:/Dropbox/segway/Firmware/src/system_config/pic32mx_sk/system_config.h</itemPath>
@@ -22,6 +25,10 @@
       </logicalFolder>
       <logicalFolder name="f4" displayName="framework" projectFiles="true">
         <logicalFolder name="f1" displayName="driver" projectFiles="true">
+          <logicalFolder name="f2" displayName="adxl362" projectFiles="true">
+            <itemPath>../src/adxl362/adxl362.h</itemPath>
+            <itemPath>../src/adxl362/adxl362_io.h</itemPath>
+          </logicalFolder>
           <logicalFolder name="f1" displayName="usart" projectFiles="true">
             <itemPath>D:/microchip/harmony/v0_70_01b/framework/driver/usart/drv_usart.h</itemPath>
             <itemPath>D:/microchip/harmony/v0_70_01b/framework/driver/usart/drv_usart_mapping.h</itemPath>
@@ -35,6 +42,9 @@
           </logicalFolder>
           <logicalFolder name="fports" displayName="ports" projectFiles="true">
             <itemPath>D:/microchip/harmony/v0_70_01b\/framework/peripheral/ports/plib_ports.h</itemPath>
+          </logicalFolder>
+          <logicalFolder name="f1" displayName="spi" projectFiles="true">
+            <itemPath>D:/microchip/harmony/v0_70_01b/framework/peripheral/spi/plib_spi.h</itemPath>
           </logicalFolder>
         </logicalFolder>
         <logicalFolder name="fsystem" displayName="system" projectFiles="true">
@@ -52,6 +62,9 @@
             <itemPath>D:/microchip/harmony/v0_70_01b\framework/system/int/sys_int.h</itemPath>
             <itemPath>D:/microchip/harmony/v0_70_01b\framework/system/int/sys_int_mapping.h</itemPath>
           </logicalFolder>
+          <logicalFolder name="f1" displayName="ports" projectFiles="true">
+            <itemPath>../../../../microchip/harmony/v0_70_01b/framework/system/ports/sys_ports.h</itemPath>
+          </logicalFolder>
         </logicalFolder>
       </logicalFolder>
       <logicalFolder name="f2" displayName="FreeRTOS" projectFiles="true">
@@ -65,6 +78,9 @@
                    displayName="Source Files"
                    projectFiles="true">
       <logicalFolder name="f1" displayName="app" projectFiles="true">
+        <logicalFolder name="f2" displayName="imu" projectFiles="true">
+          <itemPath>../src/imu/src/imu.c</itemPath>
+        </logicalFolder>
         <logicalFolder name="f1" displayName="system_config" projectFiles="true">
           <logicalFolder name="f2" displayName="pic32mx_sk" projectFiles="true">
             <itemPath>../src/system_config/pic32mx_sk/system_init.c</itemPath>
@@ -84,6 +100,11 @@
       </logicalFolder>
       <logicalFolder name="f3" displayName="framework" projectFiles="true">
         <logicalFolder name="f3" displayName="driver" projectFiles="true">
+          <logicalFolder name="f2" displayName="adxl362" projectFiles="true">
+            <logicalFolder name="f1" displayName="src" projectFiles="true">
+              <itemPath>../src/adxl362/src/adxl362.c</itemPath>
+            </logicalFolder>
+          </logicalFolder>
           <logicalFolder name="f1" displayName="usart" projectFiles="true">
             <logicalFolder name="f1" displayName="src" projectFiles="true">
               <logicalFolder name="f1" displayName="dynamic" projectFiles="true">
@@ -106,6 +127,11 @@
             <logicalFolder name="fsrc" displayName="src" projectFiles="true">
             </logicalFolder>
             <itemPath>D:/microchip/harmony/v0_70_01b/framework/system/int/src/sys_int_pic32.c</itemPath>
+          </logicalFolder>
+          <logicalFolder name="f2" displayName="ports" projectFiles="true">
+            <logicalFolder name="f1" displayName="src" projectFiles="true">
+              <itemPath>../../../../microchip/harmony/v0_70_01b/framework/system/ports/src/sys_ports.c</itemPath>
+            </logicalFolder>
           </logicalFolder>
         </logicalFolder>
       </logicalFolder>
