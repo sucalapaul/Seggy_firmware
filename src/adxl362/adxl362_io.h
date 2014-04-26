@@ -41,8 +41,19 @@ extern "C" {
 #define ADXL362_SPI_CS_SELECT()    	SYS_PORTS_PinClear(PORTS_ID_0,ADXL362_CS_PORT_ID,ADXL362_CS_PORT_PIN)
 #define ADXL362_SPI_CS_DESELECT() 	SYS_PORTS_PinSet(PORTS_ID_0,ADXL362_CS_PORT_ID,ADXL362_CS_PORT_PIN)
 
+typedef struct
+{
+    uint16_t x;
+    uint16_t y;
+    uint16_t z;
+    uint16_t temperature;
+} ADXL362_RAW_DATA;
 
 void xl362Init();
+void xl362RegisterRead(unsigned char regaddr, unsigned char *buf);
+void xl362RegisterWrite(unsigned char regaddr, unsigned char *buf);
+void xl362RawDataRead(ADXL362_RAW_DATA * raw_data);
+
 
 /*
   The read function takes a byte count, a register address and a

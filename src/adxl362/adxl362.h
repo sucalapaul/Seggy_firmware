@@ -113,6 +113,14 @@ extern "C" {
 #define XL362_INT_AWAKE          0x40
 #define XL362_INT_LOW            0x80
 
+
+/* ADXL362_REG_FILTER_CTL definitions */
+#define XL362_FILTER_CTL_RANGE(x)         (((x) & 0x3) << 6)
+#define XL362_FILTER_CTL_RESERVED         (1 << 5)
+#define XL362_FILTER_CTL_HALF_BW          (1 << 4)
+#define XL362_FILTER_CTL_EXT_SAMPLE       (1 << 3)
+#define XL362_FILTER_CTL_ODR(x)           (((x) & 0x7) << 0)
+
 /* Bit values in FILTER_CTL  (8 bits allocated)                            */
 #define XL362_RATE_400        0x05
 #define XL362_RATE_200        0x04
@@ -120,8 +128,6 @@ extern "C" {
 #define XL362_RATE_50         0x02
 #define XL362_RATE_25         0x01
 #define XL362_RATE_12_5       0x00
-
-#define XL362_EXT_TRIGGER     0x08
 
 #define XL362_AXIS_X          0x00
 #define XL362_AXIS_Y          0x10
@@ -132,6 +138,14 @@ extern "C" {
 #define XL362_RANGE_8G        0x80
 
 
+/* ADXL362_REG_POWER_CTL definitions */
+#define XL362_POWER_CTL_RES               (1 << 7)
+#define XL362_POWER_CTL_EXT_CLK           (1 << 6)
+#define XL362_POWER_CTL_LOW_NOISE(x)      (((x) & 0x3) << 4)
+#define XL362_POWER_CTL_WAKEUP            (1 << 3)
+#define XL362_POWER_CTL_AUTOSLEEP         (1 << 2)
+#define XL362_POWER_CTL_MEASURE(x)        (((x) & 0x3) << 0)
+
 /* Bit values in POWER_CTL  (8 bits allocated)                            */
 #define XL362_STANDBY           0x00
 #define XL362_MEASURE_1D        0x01
@@ -139,6 +153,10 @@ extern "C" {
 #define XL362_AUTO_SLEEP        0x04
 #define XL362_SLEEP             0x08
 
+#define XL362_NOISE_MODE_NORMAL           0
+#define XL362_NOISE_MODE_LOW              1
+#define XL362_NOISE_MODE_ULTRALOW         2
+    
 #define XL362_LOW_POWER         0x00
 #define XL362_LOW_NOISE1        0x10
 #define XL362_LOW_NOISE2        0x20

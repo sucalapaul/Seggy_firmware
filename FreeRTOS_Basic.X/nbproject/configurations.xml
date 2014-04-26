@@ -5,6 +5,9 @@
                    displayName="Header Files"
                    projectFiles="true">
       <logicalFolder name="f1" displayName="app" projectFiles="true">
+        <logicalFolder name="f2" displayName="imu" projectFiles="true">
+          <itemPath>../src/imu/imu.h</itemPath>
+        </logicalFolder>
         <logicalFolder name="f1" displayName="system_config" projectFiles="true">
           <logicalFolder name="f2" displayName="pic32mx_sk" projectFiles="true">
             <itemPath>D:/Dropbox/segway/Firmware/src/system_config/pic32mx_sk/system_config.h</itemPath>
@@ -75,6 +78,9 @@
                    displayName="Source Files"
                    projectFiles="true">
       <logicalFolder name="f1" displayName="app" projectFiles="true">
+        <logicalFolder name="f2" displayName="imu" projectFiles="true">
+          <itemPath>../src/imu/src/imu.c</itemPath>
+        </logicalFolder>
         <logicalFolder name="f1" displayName="system_config" projectFiles="true">
           <logicalFolder name="f2" displayName="pic32mx_sk" projectFiles="true">
             <itemPath>../src/system_config/pic32mx_sk/system_init.c</itemPath>

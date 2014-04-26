@@ -381,13 +381,14 @@ static void ISRBlockTask( void* pvParameters )
             /* block on the binary semaphore given by an ISR */
             xSemaphoreTake( xBlockSemaphore, portMAX_DELAY );
 
-            xl362Read(1, XL362_PARTID, &id);
+            xl362RegisterRead(XL362_XDATA8, &id);
 
             BSP_ToggleLED( pxTaskParameter->usLEDNumber );
 
-            strcpy(appData.buffer, "Salut ");
+            //strcpy(appData.buffer, "Salut ");
+            appData.buffer[0] = id;
             /* Update Buffer Size */
-            appData.bufferObject.bufferSize = 6;
+            appData.bufferObject.bufferSize = 1;
 
             usartStatus = DRV_USART_ClientStatus( appData.usartHandle );
             if ( usartStatus == DRV_USART_CLIENT_STATUS_READY )
