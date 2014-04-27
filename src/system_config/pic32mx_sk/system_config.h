@@ -63,6 +63,11 @@ extern "C" {
 #define ADXL362_SPI_MODULE_ID   SPI_ID_2
 #define ADXL362_SPI_BAUD        (1000000ul)
 
+#define GYRO_CS_PORT_ID      PORT_CHANNEL_D
+#define GYRO_CS_PORT_PIN     PORTS_BIT_POS_11
+#define GYRO_SPI_MODULE_ID   SPI_ID_2
+#define GYRO_SPI_BAUD        (1000000ul)
+
 
 
 // *****************************************************************************

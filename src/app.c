@@ -71,6 +71,7 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 
 /* Drivers */
 #include "driver/usart/drv_usart.h"
+#include "gyro/gyro_io.h"
 
 // *****************************************************************************
 // *****************************************************************************
@@ -357,7 +358,8 @@ static void ISRBlockTask( void* pvParameters )
         appData.usartHandle = DRV_USART_Open(SYS_USART_DRIVER_INDEX,
             DRV_IO_INTENT_READWRITE);
 
-        xl362Init();
+        //xl362Init();
+        gyroInit();
 
       /* local variables marked as volatile so the compiler does not optimize them away */
         APPTaskParameter_t *pxTaskParameter;
@@ -384,15 +386,17 @@ static void ISRBlockTask( void* pvParameters )
             xSemaphoreTake( xBlockSemaphore, portMAX_DELAY );
 
             //xl362RegisterRead(XL362_XDATAH, &id);
-            xl362RawDataRead ( &raw_data );
+            //xl362RawDataRead ( &raw_data );
+            gyroRegisterRead(GYRO_WHO_AM_I, &id);
 
             BSP_ToggleLED( pxTaskParameter->usLEDNumber );
 
             //strcpy(appData.buffer, "Salut ");
-            sprintf(appData.buffer, " x: %d; y: %d; z: %d; t: %d\r\n", raw_data.x, raw_data.y, raw_data.z, raw_data.t);
+            //sprintf(appData.buffer, " x: %d; y: %d; z: %d; t: %d\r\n", raw_data.x, raw_data.y, raw_data.z, raw_data.t);
+            //sprintf(appData.buffer, "")
             appData.buffer[0] = id;
             /* Update Buffer Size */
-            appData.bufferObject.bufferSize = strlen(appData.buffer);
+            appData.bufferObject.bufferSize = 1;//strlen(appData.buffer);
 
             usartStatus = DRV_USART_ClientStatus( appData.usartHandle );
             if ( usartStatus == DRV_USART_CLIENT_STATUS_READY )
