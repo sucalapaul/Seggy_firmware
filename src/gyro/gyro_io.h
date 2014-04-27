@@ -27,10 +27,11 @@ typedef struct
     int16_t x;
     int16_t y;
     int16_t z;
-    int16_t t; //temperature
+    int8_t  t; //temperature
+    uint8_t status;
 } GYRO_RAW_DATA;
 
-void gyroInit();
+short gyroInit();
 void gyroRegisterRead(unsigned char regaddr, unsigned char *buf);
 void gyroRegisterWrite(unsigned char regaddr, unsigned char *buf);
 void gyroRawDataRead(GYRO_RAW_DATA * raw_data);

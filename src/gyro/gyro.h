@@ -15,11 +15,14 @@ extern "C" {
 /*  Register Addresses
 */
 
-#define GYRO_READ               0x80
 #define GYRO_WRITE              0x00
-#define GYRO_AUTOINCREMENT      0x40
+#define GYRO_MULTI_WRITE        0x40
+#define GYRO_READ               0x80
+#define GYRO_MULTI_READ         0xC0
 
 #define GYRO_WHO_AM_I		0x0F
+#define GYRO_WHO_AM_I_RESPONSE	0xD3
+    
 #define GYRO_CTRL_REG1		0x20
 #define GYRO_CTRL_REG2		0x21
 #define GYRO_CTRL_REG3		0x22
@@ -57,6 +60,15 @@ extern "C" {
 #define GYRO_REG1_YEN		0x02
 #define GYRO_REG1_XEN		0x01
 
+/*      CTRL_REG2
+ */
+#define GYRO_REG2_HPM1		0x20
+#define GYRO_REG2_HPM0		0x10
+#define GYRO_REG2_HPCF3		0x08
+#define GYRO_REG2_HPCF2		0x04
+#define GYRO_REG2_HPCF1		0x02
+#define GYRO_REG2_HPCF0		0x01
+
 /*	CTRL_REG3
 */
 #define GYRO_REG3_I1_INT1	0x80
@@ -67,6 +79,30 @@ extern "C" {
 #define GYRO_REG3_I2_WTM	0x04
 #define GYRO_REG3_I2_ORUN	0x02
 #define GYRO_REG3_I2_EMPTY	0x01
+
+/*      CTRL_REG4
+ */
+#define GYRO_REG4_BDU   	0x80
+#define GYRO_REG4_BLE   	0x40
+
+#define GYRO_REG4_SCALE_2000	0x20
+#define GYRO_REG4_SCALE_500	0x10
+#define GYRO_REG4_SCALE_250	0x00
+    
+#define GYRO_REG4_ST1   	0x04
+#define GYRO_REG4_ST0   	0x02
+#define GYRO_REG4_SIM   	0x01
+
+
+/*      CTRL_REG5
+ */
+#define GYRO_REG5_BOOT  	0x80
+#define GYRO_REG5_FIFO_EN	0x40
+#define GYRO_REG5_HP_EN		0x10
+#define GYRO_REG5_INT1_SEL1	0x08
+#define GYRO_REG5_INT1_SEL0	0x04
+#define GYRO_REG5_OUT_SEL1	0x02
+#define GYRO_REG5_OUT_SEL0	0x01
 
 /*	INT1_CFG
 */

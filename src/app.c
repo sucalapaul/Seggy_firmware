@@ -353,7 +353,7 @@ static void ISRBlockTask( void* pvParameters )
         /* Status of buffer submitted to USART */
         DRV_USART_BUFFER_STATUS bufferStatus;
 
-        ADXL362_RAW_DATA raw_data;
+        GYRO_RAW_DATA raw_data;
 
         appData.usartHandle = DRV_USART_Open(SYS_USART_DRIVER_INDEX,
             DRV_IO_INTENT_READWRITE);
@@ -379,7 +379,7 @@ static void ISRBlockTask( void* pvParameters )
         /* Start the timer. */
         PLIB_TMR_Start(TMR_ID_5);
 
-        unsigned char id;
+        int8_t id;
         for( ;; )
         {
             /* block on the binary semaphore given by an ISR */
@@ -387,16 +387,18 @@ static void ISRBlockTask( void* pvParameters )
 
             //xl362RegisterRead(XL362_XDATAH, &id);
             //xl362RawDataRead ( &raw_data );
-            gyroRegisterRead(GYRO_WHO_AM_I, &id);
+            //gyroRegisterRead(GYRO_WHO_AM_I, &id);
+            gyroRawDataRead ( &raw_data );
+            //gyroRegisterRead ( GYRO_OUT_X_H, &id );
 
             BSP_ToggleLED( pxTaskParameter->usLEDNumber );
 
             //strcpy(appData.buffer, "Salut ");
-            //sprintf(appData.buffer, " x: %d; y: %d; z: %d; t: %d\r\n", raw_data.x, raw_data.y, raw_data.z, raw_data.t);
-            //sprintf(appData.buffer, "")
-            appData.buffer[0] = id;
+            sprintf(appData.buffer, "%d,%d,%d,%d\r\n", raw_data.x, raw_data.y, raw_data.z, raw_data.t);
+            //sprintf(appData.buffer, "%d\r\n", id);
+            //appData.buffer[0] = id;
             /* Update Buffer Size */
-            appData.bufferObject.bufferSize = 1;//strlen(appData.buffer);
+            appData.bufferObject.bufferSize = strlen(appData.buffer);
 
             usartStatus = DRV_USART_ClientStatus( appData.usartHandle );
             if ( usartStatus == DRV_USART_CLIENT_STATUS_READY )
