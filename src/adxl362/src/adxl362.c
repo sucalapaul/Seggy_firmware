@@ -30,7 +30,7 @@ void xl362Init()
     buf = XL362_FILTER_CTL_ODR ( XL362_RATE_100 ) |
             XL362_FILTER_CTL_HALF_BW |
             XL362_FILTER_CTL_RANGE ( XL362_RANGE_2G );
-    xl362RegisterWrite(XL362_FILTER_CTL, &buf);
+    //xl362RegisterWrite(XL362_FILTER_CTL, &buf);
 
     /* Configure accelerometer POWER CONTROL REGISTER
      * Measurement Mode
@@ -39,7 +39,7 @@ void xl362Init()
      * Power vs. Noise Tradeoff: Ultralow noise mode                       */
     buf = XL362_POWER_CTL_MEASURE ( XL362_MEASURE_3D ) |
             XL362_POWER_CTL_LOW_NOISE( XL362_NOISE_MODE_ULTRALOW );
-    xl362RegisterWrite(XL362_POWER_CTL, &buf);
+    //xl362RegisterWrite(XL362_POWER_CTL, &buf);
 }
 /*
   The read function takes a byte count, a register address and a

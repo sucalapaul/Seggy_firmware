@@ -103,4 +103,3 @@ void xl362Write(unsigned char count, unsigned char regaddr, unsigned char *buf);
 #endif
 
 #endif	/* ADXL362_IO_H */
-
