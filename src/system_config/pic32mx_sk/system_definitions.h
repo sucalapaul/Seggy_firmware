@@ -73,7 +73,7 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 typedef struct
 {
     /* USART driver object handle. */
-    SYS_MODULE_OBJ drvUSARTObject;
+    //SYS_MODULE_OBJ drvUSARTObject;
 
 } APP_DRV_OBJECTS;
 

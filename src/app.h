@@ -18,7 +18,15 @@ extern "C" {
 #include "system/system.h"
 #include "system/ports/sys_ports.h"
 #include "adxl362/adxl362_io.h"
+#include "driver/usart/drv_usart.h"
+//#include "driver/usart/src/drv_usart_local.h"
 
+// *****************************************************************************
+// *****************************************************************************
+// Section: Type Definitions
+// *****************************************************************************
+// *****************************************************************************
+extern SYS_MODULE_OBJ    usartModule;
     
 // *****************************************************************************
 /* Application Data
@@ -41,8 +49,11 @@ typedef struct
     /* USART buffer for display */
     char buffer[APP_BUFFER_SIZE];
 
+    /* Data Size in the USART Buffer */
+    uint32_t bufferSize;
+
     /* Structure used to transfer buffer via USART driver. */
-    DRV_USART_IO_BUFFER bufferObject;
+    //DRV_USART_IO_BUFFER bufferObject;
 
     /* USART driver handle */
     DRV_HANDLE usartHandle;

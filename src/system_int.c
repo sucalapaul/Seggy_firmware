@@ -45,8 +45,10 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 
 void __ISR ( _UART_1_VECTOR,ipl4 ) _InterruptHandler_USART_Tx_Rx_stub ( void )
 {
-    DRV_USART_TasksTX((SYS_MODULE_OBJ)appDrvObjects.drvUSARTObject);
-    DRV_USART_TasksRX((SYS_MODULE_OBJ)appDrvObjects.drvUSARTObject);
+    /* USART Driver Transmit Task */
+    DRV_USART_TasksTransmit(usartModule);
+    /* USART Driver Receive Task */
+    DRV_USART_TasksReceive(usartModule);
 }
 
 /*******************************************************************************

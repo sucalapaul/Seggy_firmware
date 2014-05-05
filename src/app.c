@@ -167,12 +167,6 @@ static const APPTaskParameter_t APPTaskParameters = {2 /* Toggle LED */, 31250 /
  */
 void APP_Initialize( void )
 {
-
-        /* Prepare a buffer object for transfer using the USART driver.  */
-        appData.bufferObject.buffer     = appData.buffer;
-        appData.bufferObject.bufferSize = min(APP_BUFFER_SIZE, strlen(appData.buffer));
-        appData.bufferObject.flags      = DRV_USART_BUFFER_FLAG_WRITE;
-
 	/* Create the queue. */
 	xQueue = xQueueCreate( QUEUE_LENGTH, sizeof( unsigned long ) );
 
@@ -351,7 +345,7 @@ static void ISRBlockTask( void* pvParameters )
         DRV_USART_CLIENT_STATUS usartStatus;
 
         /* Status of buffer submitted to USART */
-        DRV_USART_BUFFER_STATUS bufferStatus;
+        //DRV_USART_BUFFER_STATUS bufferStatus;
 
         GYRO_RAW_DATA gyro_raw_data;
         ADXL362_RAW_DATA adxl_raw_data;
@@ -405,14 +399,15 @@ static void ISRBlockTask( void* pvParameters )
                 //sprintf(appData.buffer, "%d\r\n", id);
                 //appData.buffer[0] = id;
                 /* Update Buffer Size */
-                appData.bufferObject.bufferSize = strlen(appData.buffer);
+                appData.bufferSize = strlen(appData.buffer);
 
                 usartStatus = DRV_USART_ClientStatus( appData.usartHandle );
                 if ( usartStatus == DRV_USART_CLIENT_STATUS_READY )
                 {
                     /* Submit buffer to USART */
-                    appData.usartBufferHandle = DRV_USART_BufferAdd(
-                            appData.usartHandle, &appData.bufferObject);
+                    DRV_USART_BufferAddWrite( appData.usartHandle,
+                                          &(appData.usartBufferHandle),
+                                          appData.buffer, appData.bufferSize );
 
                     if ( appData.usartBufferHandle != DRV_HANDLE_INVALID )
                     {

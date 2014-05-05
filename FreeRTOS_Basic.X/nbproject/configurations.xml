@@ -35,7 +35,6 @@
           </logicalFolder>
           <logicalFolder name="f1" displayName="usart" projectFiles="true">
             <itemPath>D:/microchip/harmony/v0_70_01b/framework/driver/usart/drv_usart.h</itemPath>
-            <itemPath>D:/microchip/harmony/v0_70_01b/framework/driver/usart/drv_usart_mapping.h</itemPath>
           </logicalFolder>
           <itemPath>D:/microchip/harmony/v0_70_01b/framework/driver/driver.h</itemPath>
           <itemPath>D:/microchip/harmony/v0_70_01b/framework/driver/driver_common.h</itemPath>
@@ -117,7 +116,8 @@
           <logicalFolder name="f1" displayName="usart" projectFiles="true">
             <logicalFolder name="f1" displayName="src" projectFiles="true">
               <logicalFolder name="f1" displayName="dynamic" projectFiles="true">
-                <itemPath>D:/microchip/harmony/v0_70_01b/framework/driver/usart/src/dynamic/drv_usart_dynamic.c</itemPath>
+                <itemPath>D:/microchip/harmony/v0_70_01b/framework/driver/usart/src/dynamic/drv_usart.c</itemPath>
+                <itemPath>D:/microchip/harmony/v0_70_01b/framework/driver/usart/src/dynamic/drv_usart_buffer_queue.c</itemPath>
               </logicalFolder>
             </logicalFolder>
           </logicalFolder>
@@ -129,8 +129,6 @@
         </logicalFolder>
         <logicalFolder name="f2" displayName="system" projectFiles="true">
           <logicalFolder name="fcommon" displayName="common" projectFiles="true">
-            <itemPath>D:/microchip/harmony/v0_70_01b\framework/system/common/sys_buffer.c</itemPath>
-            <itemPath>D:/microchip/harmony/v0_70_01b\framework/system/common/sys_queue.c</itemPath>
           </logicalFolder>
           <logicalFolder name="f1" displayName="int" projectFiles="true">
             <logicalFolder name="fsrc" displayName="src" projectFiles="true">
@@ -189,6 +187,7 @@
         </linkerTool>
         <loading>
           <useAlternateLoadableFile>false</useAlternateLoadableFile>
+          <parseOnProdLoad>false</parseOnProdLoad>
           <alternateLoadableFile></alternateLoadableFile>
         </loading>
       </compileType>
@@ -226,6 +225,9 @@
         <property key="use-iar" value="false"/>
         <property key="use-indirect-calls" value="false"/>
       </C32>
+      <C32-AR>
+        <property key="additional-options-chop-files" value="false"/>
+      </C32-AR>
       <C32-AS>
         <property key="assembler-symbols" value=""/>
         <property key="enable-symbols" value="true"/>
