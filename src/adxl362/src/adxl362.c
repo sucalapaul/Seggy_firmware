@@ -5,7 +5,7 @@
 
 ADXL362_RAW_DATA xl362_raw_data;
 
-void xl362Init()
+short xl362Init()
 {
     unsigned char buf;
     /* CS pin set to output */
@@ -23,6 +23,13 @@ void xl362Init()
     PLIB_SPI_Enable(ADXL362_SPI_MODULE_ID);
     ADXL362_SPI_CS_DESELECT();
 
+    xl362RegisterRead ( XL362_PARTID, &buf );
+    if ( buf != XL362_PARTID_RESPONSE )
+    {
+        // Device not present, abort initialization
+        return 1;
+    }
+
     /* Configure accelerometer FILTER CONTROL REGISTER
      * Output Data Rate: 100 Hz
      * Halved Bandwidth
@@ -30,7 +37,7 @@ void xl362Init()
     buf = XL362_FILTER_CTL_ODR ( XL362_RATE_100 ) |
             XL362_FILTER_CTL_HALF_BW |
             XL362_FILTER_CTL_RANGE ( XL362_RANGE_2G );
-    //xl362RegisterWrite(XL362_FILTER_CTL, &buf);
+    xl362RegisterWrite(XL362_FILTER_CTL, &buf);
 
     /* Configure accelerometer POWER CONTROL REGISTER
      * Measurement Mode
@@ -39,7 +46,9 @@ void xl362Init()
      * Power vs. Noise Tradeoff: Ultralow noise mode                       */
     buf = XL362_POWER_CTL_MEASURE ( XL362_MEASURE_3D ) |
             XL362_POWER_CTL_LOW_NOISE( XL362_NOISE_MODE_ULTRALOW );
-    //xl362RegisterWrite(XL362_POWER_CTL, &buf);
+    xl362RegisterWrite(XL362_POWER_CTL, &buf);
+    
+    return 0;
 }
 /*
   The read function takes a byte count, a register address and a

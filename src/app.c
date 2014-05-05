@@ -109,7 +109,7 @@ converted to ticks using the portTICK_RATE_MS constant. */
 #define ISRTASK_LED                     ( 2 )
 
 /* Misc. */
-#define T5PRESCALAR                     ( 6 )
+#define T5PRESCALAR                     ( 8 )  //was 6
 /*-----------------------------------------------------------*/
 
 /*
@@ -353,12 +353,13 @@ static void ISRBlockTask( void* pvParameters )
         /* Status of buffer submitted to USART */
         DRV_USART_BUFFER_STATUS bufferStatus;
 
-        GYRO_RAW_DATA raw_data;
+        GYRO_RAW_DATA gyro_raw_data;
+        ADXL362_RAW_DATA adxl_raw_data;
 
         appData.usartHandle = DRV_USART_Open(SYS_USART_DRIVER_INDEX,
             DRV_IO_INTENT_READWRITE);
 
-        //xl362Init();
+        xl362Init();
         gyroInit();
 
       /* local variables marked as volatile so the compiler does not optimize them away */
@@ -380,42 +381,50 @@ static void ISRBlockTask( void* pvParameters )
         PLIB_TMR_Start(TMR_ID_5);
 
         int8_t id;
+        int8_t cntt = 0;
         for( ;; )
         {
             /* block on the binary semaphore given by an ISR */
             xSemaphoreTake( xBlockSemaphore, portMAX_DELAY );
 
-            //xl362RegisterRead(XL362_XDATAH, &id);
-            //xl362RawDataRead ( &raw_data );
+            cntt++;
+            //xl362RegisterRead(XL362_PARTID, &id);
+            xl362RawDataRead ( &adxl_raw_data );
             //gyroRegisterRead(GYRO_WHO_AM_I, &id);
-            gyroRawDataRead ( &raw_data );
+            gyroRawDataRead ( &gyro_raw_data );
             //gyroRegisterRead ( GYRO_OUT_X_H, &id );
 
             BSP_ToggleLED( pxTaskParameter->usLEDNumber );
 
             //strcpy(appData.buffer, "Salut ");
-            sprintf(appData.buffer, "%d,%d,%d,%d\r\n", raw_data.x, raw_data.y, raw_data.z, raw_data.t);
-            //sprintf(appData.buffer, "%d\r\n", id);
-            //appData.buffer[0] = id;
-            /* Update Buffer Size */
-            appData.bufferObject.bufferSize = strlen(appData.buffer);
-
-            usartStatus = DRV_USART_ClientStatus( appData.usartHandle );
-            if ( usartStatus == DRV_USART_CLIENT_STATUS_READY )
+            if ( cntt == 30 )
             {
-                /* Submit buffer to USART */
-                appData.usartBufferHandle = DRV_USART_BufferAdd(
-                        appData.usartHandle, &appData.bufferObject);
+                cntt = 0;
+                sprintf(appData.buffer, "%d,%d,%d,%d\r\n", gyro_raw_data.x, gyro_raw_data.y, gyro_raw_data.z, gyro_raw_data.t);
+                //sprintf(appData.buffer, "%d,%d,%d,%d\r\n\r\n", adxl_raw_data.x, adxl_raw_data.y, adxl_raw_data.z, adxl_raw_data.t);
+                //sprintf(appData.buffer, "%d\r\n", id);
+                //appData.buffer[0] = id;
+                /* Update Buffer Size */
+                appData.bufferObject.bufferSize = strlen(appData.buffer);
 
-                if ( appData.usartBufferHandle != DRV_HANDLE_INVALID )
+                usartStatus = DRV_USART_ClientStatus( appData.usartHandle );
+                if ( usartStatus == DRV_USART_CLIENT_STATUS_READY )
                 {
-                    /* Buffer is accepted. Driver will transmit. */
-                    //appData.state = APP_WAIT_FOR_DONE;
+                    /* Submit buffer to USART */
+                    appData.usartBufferHandle = DRV_USART_BufferAdd(
+                            appData.usartHandle, &appData.bufferObject);
+
+                    if ( appData.usartBufferHandle != DRV_HANDLE_INVALID )
+                    {
+                        /* Buffer is accepted. Driver will transmit. */
+                        //appData.state = APP_WAIT_FOR_DONE;
+                    }
+                    else
+                    {
+                        //appData.state = APP_ERROR;
+                    }
                 }
-                else
-                {
-                    //appData.state = APP_ERROR;
-                }
+
             }
 
         }

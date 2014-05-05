@@ -3,7 +3,7 @@
 #include "system/ports/sys_ports.h"
 #include "gyro/gyro_io.h"
 
-GYRO_RAW_DATA gyro_raw_data;
+//GYRO_RAW_DATA gyro_raw_data;
 
 short gyroInit()
 {
@@ -27,7 +27,7 @@ short gyroInit()
     gyroRegisterRead(GYRO_WHO_AM_I, &buf);
     if ( buf != GYRO_WHO_AM_I_RESPONSE )
     {
-        // Gyro not present, abort initialization
+        // Device not present, abort initialization
         return 1;
     }
 
@@ -115,7 +115,7 @@ void gyroRawDataRead(GYRO_RAW_DATA * raw_data)
     // Read all response from SPI buffer
     for (i = 0; i < 9; i++)
     {
-        buf[i] = PLIB_SPI_BufferRead(ADXL362_SPI_MODULE_ID);
+        buf[i] = PLIB_SPI_BufferRead(GYRO_SPI_MODULE_ID);
     }
 
     raw_data->t = buf[1];

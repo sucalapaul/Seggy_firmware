@@ -14,9 +14,7 @@ extern "C" {
 
 #include "gyro.h"
 #include "system/ports/sys_ports.h"
-/* Wrapper functions for reading and writing bursts to / from the XL362
-   Will need to be modified for your hardware
-*/
+
 
 
 #define GYRO_SPI_CS_SELECT()    	SYS_PORTS_PinClear(PORTS_ID_0, GYRO_CS_PORT_ID, GYRO_CS_PORT_PIN)

@@ -26,6 +26,8 @@ extern "C" {
 #define XL362_REVID              0x03
 #define XL362_XID                0x04
 
+#define XL362_PARTID_RESPONSE    0xf2
+
 /* -- RO data -- */
 #define XL362_XDATA8             0x08
 #define XL362_YDATA8             0x09
