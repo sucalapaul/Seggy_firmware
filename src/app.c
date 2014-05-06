@@ -72,7 +72,7 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 /* Drivers */
 #include "driver/usart/drv_usart.h"
 #include "gyro/gyro_io.h"
-//#include "imu/imu.h"
+#include "imu/imu.h"
 
 // *****************************************************************************
 // *****************************************************************************
@@ -350,14 +350,14 @@ static void ISRBlockTask( void* pvParameters )
 
 //        GYRO_RAW_DATA gyro_raw_data;
 //        ADXL362_RAW_DATA adxl_raw_data;
-        //SENSOR_DATA sensor_data;
+        SENSOR_DATA sensor_data;
 
         appData.usartHandle = DRV_USART_Open(SYS_USART_DRIVER_INDEX,
             DRV_IO_INTENT_READWRITE);
 
         //xl362Init();
         //gyroInit();
-        //IMU_Init();
+        IMU_Init();
 
       /* local variables marked as volatile so the compiler does not optimize them away */
         APPTaskParameter_t *pxTaskParameter;
@@ -391,7 +391,7 @@ static void ISRBlockTask( void* pvParameters )
             //gyroRawDataRead ( &gyro_raw_data );
             //gyroRegisterRead ( GYRO_OUT_X_H, &id );
 
-            //IMU_GetValues ( &sensor_data );
+            IMU_GetValues ( &sensor_data );
 
             BSP_ToggleLED( pxTaskParameter->usLEDNumber );
 
@@ -400,7 +400,7 @@ static void ISRBlockTask( void* pvParameters )
             {
                 cntt = 0;
                 //sprintf(appData.buffer, "%d,%d,%d,%d\r\n", gyro_raw_data.x, gyro_raw_data.y, gyro_raw_data.z, gyro_raw_data.t);
-                //sprintf ( appData.buffer, "%d,%d,%d,%d\r\n", sensor_data.x, sensor_data.y, sensor_data.z );
+                sprintf ( appData.buffer, "%7.3f,%7.3f,%7.3f\r\n", sensor_data.dx, sensor_data.dy, sensor_data.dz );
 
                 
                 //sprintf(appData.buffer, "%d,%d,%d,%d\r\n\r\n", adxl_raw_data.x, adxl_raw_data.y, adxl_raw_data.z, adxl_raw_data.t);

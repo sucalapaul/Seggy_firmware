@@ -1,8 +1,6 @@
 #include "imu/imu.h"
 
-int gyro_offset_x,
-    gyro_offset_y,
-    gyro_offset_z;
+float tempRawDx, tempRawDy, tempRawDz;
 
 int IMU_Init()
 {
@@ -18,7 +16,9 @@ int IMU_Init()
         return 1;
     }
 
+    IMU_LoadCalibration();
     zeroGyro;
+    
     // Initialize variables
 
     return 0;
@@ -40,17 +40,19 @@ void IMU_GetValues( SENSOR_DATA * values )
     values -> x = (float) adxl_raw_data.x;
     values -> y = (float) adxl_raw_data.y;
     values -> z = (float) adxl_raw_data.z;
-    values -> dx = (float) gyro_raw_data.x;
-    values -> dy = (float) gyro_raw_data.y;
-    values -> dz = (float) gyro_raw_data.z;
+    tempRawDx = (float) gyro_raw_data.x;
+    tempRawDy = (float) gyro_raw_data.y;
+    tempRawDz = (float) gyro_raw_data.z;
 
     // Calibration 
     values -> x = ( values -> x - acc_offset_x ) * acc_scale_x;
     values -> y = ( values -> y - acc_offset_y ) * acc_scale_y;
     values -> z = ( values -> z - acc_offset_z ) * acc_scale_z;
-    values -> dx = ( values -> dx - gyro_offset_x ) * gyro_scale_x;
-    values -> dy = ( values -> dy - gyro_offset_y ) * gyro_scale_y;
-    values -> dz = ( values -> dz - gyro_offset_z ) * gyro_scale_z;
+    values -> dy = ( tempRawDx - gyro_offset_x ) * gyro_scale_x;
+    values -> dx = ( tempRawDy - gyro_offset_y ) * gyro_scale_y;
+    values -> dz = ( tempRawDz - gyro_offset_z ) * gyro_scale_z;
+
+    // TODO: Compensate with temperature
 }
 
 /*
@@ -59,7 +61,7 @@ void IMU_GetValues( SENSOR_DATA * values )
 void zeroGyro()
 {
     int i;
-    const int totSamples = 3;
+    const int totSamples = 20;
     GYRO_RAW_DATA raw_data, 
             accumulator = { .x = 0, .y = 0, .z = 0 };
 

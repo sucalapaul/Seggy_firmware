@@ -12,16 +12,21 @@
 extern "C" {
 #endif
 
-    const int acc_offset_x = 0;
-    const int acc_offset_y = 0;
-    const int acc_offset_z = 0;
-    const float acc_scale_x = 1;
-    const float acc_scale_y = 1;
-    const float acc_scale_z = 1;
+    int acc_offset_x;
+    int acc_offset_y;
+    int acc_offset_z;
+    float acc_scale_x;
+    float acc_scale_y;
+    float acc_scale_z;
 
-    const float gyro_scale_x = 1;
-    const float gyro_scale_y = 1;
-    const float gyro_scale_z = 1;
+    int gyro_offset_x;
+    int gyro_offset_y;
+    int gyro_offset_z;
+    float gyro_scale_x;
+    float gyro_scale_y;
+    float gyro_scale_z;
+
+    void IMU_load_calibration();
 
 #ifdef	__cplusplus
 }
