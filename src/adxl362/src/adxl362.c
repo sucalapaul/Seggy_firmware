@@ -5,7 +5,7 @@
 
 ADXL362_RAW_DATA xl362_raw_data;
 
-short xl362Init()
+int xl362Init()
 {
     unsigned char buf;
     /* CS pin set to output */

@@ -29,7 +29,7 @@ typedef struct
     uint8_t status;
 } GYRO_RAW_DATA;
 
-short gyroInit();
+int gyroInit();
 void gyroRegisterRead(unsigned char regaddr, unsigned char *buf);
 void gyroRegisterWrite(unsigned char regaddr, unsigned char *buf);
 void gyroRawDataRead(GYRO_RAW_DATA * raw_data);

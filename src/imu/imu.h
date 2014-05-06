@@ -12,17 +12,26 @@
 extern "C" {
 #endif
 
-    #include <stdint.h>
+#include <stdint.h>
+#include "adxl362/adxl362_io.h"
+#include "gyro/gyro_io.h"
+#include "calibration.h"
 
 typedef struct
 {
-    uint32_t x;
-    uint32_t y;
-    uint32_t z;
-    uint32_t dx;
-    uint32_t dy;
-    uint32_t dz;
+    float x;
+    float y;
+    float z;
+    float dx;
+    float dy;
+    float dz;
+    float temp;
 } SENSOR_DATA;
+
+int IMU_Init();
+
+void IMU_GetValues( SENSOR_DATA * values );
+void zeroGyro();
 
 
 #ifdef	__cplusplus

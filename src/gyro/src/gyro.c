@@ -5,7 +5,7 @@
 
 //GYRO_RAW_DATA gyro_raw_data;
 
-short gyroInit()
+int gyroInit()
 {
     unsigned char buf;
     /* CS pin set to output */

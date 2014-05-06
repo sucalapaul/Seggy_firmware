@@ -49,7 +49,7 @@ typedef struct
     int16_t t; //temperature
 } ADXL362_RAW_DATA;
 
-short xl362Init();
+int xl362Init();
 void xl362RegisterRead(unsigned char regaddr, unsigned char *buf);
 void xl362RegisterWrite(unsigned char regaddr, unsigned char *buf);
 void xl362RawDataRead(ADXL362_RAW_DATA * raw_data);

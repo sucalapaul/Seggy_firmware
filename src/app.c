@@ -72,6 +72,7 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 /* Drivers */
 #include "driver/usart/drv_usart.h"
 #include "gyro/gyro_io.h"
+//#include "imu/imu.h"
 
 // *****************************************************************************
 // *****************************************************************************
@@ -347,14 +348,16 @@ static void ISRBlockTask( void* pvParameters )
         /* Status of buffer submitted to USART */
         //DRV_USART_BUFFER_STATUS bufferStatus;
 
-        GYRO_RAW_DATA gyro_raw_data;
-        ADXL362_RAW_DATA adxl_raw_data;
+//        GYRO_RAW_DATA gyro_raw_data;
+//        ADXL362_RAW_DATA adxl_raw_data;
+        //SENSOR_DATA sensor_data;
 
         appData.usartHandle = DRV_USART_Open(SYS_USART_DRIVER_INDEX,
             DRV_IO_INTENT_READWRITE);
 
-        xl362Init();
-        gyroInit();
+        //xl362Init();
+        //gyroInit();
+        //IMU_Init();
 
       /* local variables marked as volatile so the compiler does not optimize them away */
         APPTaskParameter_t *pxTaskParameter;
@@ -383,10 +386,12 @@ static void ISRBlockTask( void* pvParameters )
 
             cntt++;
             //xl362RegisterRead(XL362_PARTID, &id);
-            xl362RawDataRead ( &adxl_raw_data );
+            //xl362RawDataRead ( &adxl_raw_data );
             //gyroRegisterRead(GYRO_WHO_AM_I, &id);
-            gyroRawDataRead ( &gyro_raw_data );
+            //gyroRawDataRead ( &gyro_raw_data );
             //gyroRegisterRead ( GYRO_OUT_X_H, &id );
+
+            //IMU_GetValues ( &sensor_data );
 
             BSP_ToggleLED( pxTaskParameter->usLEDNumber );
 
@@ -394,7 +399,10 @@ static void ISRBlockTask( void* pvParameters )
             if ( cntt == 30 )
             {
                 cntt = 0;
-                sprintf(appData.buffer, "%d,%d,%d,%d\r\n", gyro_raw_data.x, gyro_raw_data.y, gyro_raw_data.z, gyro_raw_data.t);
+                //sprintf(appData.buffer, "%d,%d,%d,%d\r\n", gyro_raw_data.x, gyro_raw_data.y, gyro_raw_data.z, gyro_raw_data.t);
+                //sprintf ( appData.buffer, "%d,%d,%d,%d\r\n", sensor_data.x, sensor_data.y, sensor_data.z );
+
+                
                 //sprintf(appData.buffer, "%d,%d,%d,%d\r\n\r\n", adxl_raw_data.x, adxl_raw_data.y, adxl_raw_data.z, adxl_raw_data.t);
                 //sprintf(appData.buffer, "%d\r\n", id);
                 //appData.buffer[0] = id;
