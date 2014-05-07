@@ -1,6 +1,9 @@
 #include "imu/imu.h"
+#include "math.h"
 
 float tempRawDx, tempRawDy, tempRawDz;
+VECTOR_3D REst, RGyro, Az, inclination, prevInclination;
+bool first_reading;
 
 int IMU_Init()
 {
@@ -18,6 +21,7 @@ int IMU_Init()
 
     IMU_LoadCalibration();
     zeroGyro;
+    first_reading = true;
     
     // Initialize variables
 
@@ -75,4 +79,74 @@ void zeroGyro()
     gyro_offset_x = accumulator.x / totSamples;
     gyro_offset_y = accumulator.y / totSamples;
     gyro_offset_z = accumulator.z / totSamples;
+}
+
+//void normalize ( SENSOR_DATA )
+
+float squared(float x){
+  return x*x;
+}
+
+void IMU_GetInclination(int intervalms, SENSOR_DATA * inclination)
+{
+    static SENSOR_DATA calibratedData;
+    static float R;
+    static char signRzGyro;
+    static float kGyro = 2;
+
+    IMU_GetValues ( &calibratedData );
+
+    // normalize accelerometer data
+    R = calibratedData.x * calibratedData.x +
+        calibratedData.y * calibratedData.y +
+        calibratedData.z * calibratedData.z;
+
+    calibratedData.x /= R;
+    calibratedData.y /= R;
+    calibratedData.z /= R;
+
+    //directionCosineVector.x = atan2f(calibratedData.y, calibratedData.z) * 180 / M_PI;
+
+    if ( first_reading )
+    {
+        // initialize with accelerometer readings
+        REst.x = calibratedData.x;
+        REst.y = calibratedData.y;
+        REst.z = calibratedData.z;
+    }
+    else
+    {
+        if ( abs(REst.z) < 0.1 )
+        {
+            RGyro.x = REst.x;
+            RGyro.y = REst.y;
+            RGyro.z = REst.z;
+        }
+        Az.x = atan2f ( REst.x, REst.z ) * 180 / M_PI;
+        Az.y = atan2f ( REst.y, REst.z ) * 180 / M_PI;
+
+        Az.x += calibratedData.dx * ( intervalms / 1000 );
+        Az.y += calibratedData.dy * ( intervalms / 1000 );
+
+        signRzGyro = ( cosf ( Az.x * M_PI / 180 ) >=0 ) ? 1 : -1;
+
+        RGyro.x = sinf ( Az.x * M_PI / 180 );
+        RGyro.x /= sqrtf( 1 + squared(cosf(Az.x * M_PI / 180)) * squared(tanf(Az.y * M_PI / 180)) );
+        RGyro.y = sinf ( Az.y * M_PI / 180 );
+        RGyro.y /= sqrtf( 1 + squared(cosf(Az.y * M_PI / 180)) * squared(tanf(Az.x * M_PI / 180)) );
+
+        RGyro.z = signRzGyro * sqrtf(1 - squared(RGyro.x) - squared(RGyro.y));
+    }
+    REst.x = (calibratedData.x + kGyro * RGyro.x) / (1 + kGyro);
+    REst.y = (calibratedData.y + kGyro * RGyro.y) / (1 + kGyro);
+    REst.z = (calibratedData.z + kGyro * RGyro.z) / (1 + kGyro);
+
+
+    R = REst.x * REst.x + REst.y * REst.y + REst.z * REst.z;
+    REst.x /= R;
+    REst.y /= R;
+    REst.z /= R;
+
+    inclination -> x = atan2f ( REst.x, REst.z ) * 180 / M_PI;
+    inclination -> y = atan2f ( REst.y, REst.z ) * 180 / M_PI;
 }

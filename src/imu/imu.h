@@ -28,6 +28,13 @@ typedef struct
     float temp;
 } SENSOR_DATA;
 
+typedef struct
+{
+    float x;
+    float y;
+    float z;
+} VECTOR_3D;
+
 int IMU_Init();
 
 void IMU_GetValues( SENSOR_DATA * values );
