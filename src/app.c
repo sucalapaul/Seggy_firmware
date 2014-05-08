@@ -110,7 +110,7 @@ converted to ticks using the portTICK_RATE_MS constant. */
 #define ISRTASK_LED                     ( 2 )
 
 /* Misc. */
-#define T5PRESCALAR                     ( 8 )  //was 6
+#define T5PRESCALAR                     ( 6 )  //was 6
 /*-----------------------------------------------------------*/
 
 /*
@@ -391,12 +391,12 @@ static void ISRBlockTask( void* pvParameters )
             //gyroRawDataRead ( &gyro_raw_data );
             //gyroRegisterRead ( GYRO_OUT_X_H, &id );
 
-            IMU_GetInclination ( 50, &sensor_data );
+            IMU_GetInclination ( 25, &sensor_data );
 
             BSP_ToggleLED( pxTaskParameter->usLEDNumber );
 
             //strcpy(appData.buffer, "Salut ");
-            if ( cntt == 30 )
+            if ( cntt == 1 )
             {
                 cntt = 0;
                 //sprintf(appData.buffer, "%d,%d,%d,%d\r\n", gyro_raw_data.x, gyro_raw_data.y, gyro_raw_data.z, gyro_raw_data.t);
