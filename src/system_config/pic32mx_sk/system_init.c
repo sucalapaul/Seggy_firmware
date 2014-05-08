@@ -50,6 +50,8 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 //#include "system_config.h"
 //#include "system_definitions.h"
 #include "app.h"
+#include "peripheral/tmr/plib_tmr.h"
+#include "peripheral/oc/plib_oc.h"
 
 
 // ****************************************************************************
@@ -209,6 +211,8 @@ static DRV_USART_INIT drvUSARTInit =
 };
 
 
+
+
 void SYS_Initialize ( void * data )
 {
     /* Configure the hardware for maximum performance. */
@@ -244,6 +248,46 @@ void SYS_Initialize ( void * data )
                                       (SYS_MODULE_INIT *)&drvUSARTInit);
     /* Check the usart status */
     sysStatus = DRV_USART_Status(usartModule);
+
+
+
+   /* Setup Timer 2 - PBclk as the source, prescaler is 1:1 (PBclk / 1),
+      enable 16bit counter mode, clear the counter, set the period to 2,000
+      - 80MHz PBclk / 1 = 80MHz Timer 2 clock
+      - Period is set to 2,000 so that the timer rolls over every 25us
+      - 1/25us = 40KHz signal */
+   PLIB_TMR_ClockSourceSelect(TMR_ID_2, TMR_CLOCK_SOURCE_PERIPHERAL_CLOCK);
+   PLIB_TMR_PrescaleSelect(TMR_ID_2, TMR_PRESCALE_VALUE_1);
+   PLIB_TMR_Mode16BitEnable(TMR_ID_2);
+   PLIB_TMR_Counter16BitClear(TMR_ID_2);
+   PLIB_TMR_Period16BitSet(TMR_ID_2, 4000);
+
+   /* Setup OCMP 1 module - Use timer 2, output is an edge aligned signal,
+      disable PWM faults, duty cycle and compare values will have 16-bit values,
+      buffer value is set to 0, pulse width (duty cycle) value is set to 500
+      - The PWM remains high until the timer reaches 500. The PWM then goes
+      - low until the timer hits its period of 2000, rolling over to repeat
+      - the process again. 500/2,000 = 25% Duty Cycle */
+   PLIB_OC_TimerSelect(OC_ID_2, OC_TIMER_16BIT_TMR2);
+   PLIB_OC_ModeSelect(OC_ID_2, OC_COMPARE_PWM_EDGE_ALIGNED_MODE);
+   PLIB_OC_FaultInputSelect(OC_ID_2, OC_FAULT_DISABLE);
+   PLIB_OC_BufferSizeSelect(OC_ID_2, OC_BUFFER_SIZE_16BIT);
+   PLIB_OC_Buffer16BitSet(OC_ID_2, 0);
+   PLIB_OC_PulseWidth16BitSet(OC_ID_2, 400);
+
+
+   PLIB_OC_TimerSelect(OC_ID_3, OC_TIMER_16BIT_TMR2);
+   PLIB_OC_ModeSelect(OC_ID_3, OC_COMPARE_PWM_EDGE_ALIGNED_MODE);
+   PLIB_OC_FaultInputSelect(OC_ID_3, OC_FAULT_DISABLE);
+   PLIB_OC_BufferSizeSelect(OC_ID_3, OC_BUFFER_SIZE_16BIT);
+   PLIB_OC_Buffer16BitSet(OC_ID_3, 0);
+   PLIB_OC_PulseWidth16BitSet(OC_ID_3, 0);
+
+
+   /* Enable the OCMP module and start the timer */
+   PLIB_OC_Enable(OC_ID_2);
+   PLIB_OC_Enable(OC_ID_3);
+   PLIB_TMR_Start(TMR_ID_2);  
 
 }
 

@@ -184,5 +184,6 @@ void IMU_GetInclination(int intervalms, SENSOR_DATA * inclination)
     }
 
     inclination -> x = estimated_angle;
-    inclination -> y = calibratedData.dx;
+    inclination -> y = accelerometer_angle;
+    inclination -> z = gyro_angle;
 }
