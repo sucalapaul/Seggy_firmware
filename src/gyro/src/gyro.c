@@ -40,9 +40,9 @@ int gyroInit()
     gyroRegisterWrite(GYRO_CTRL_REG1, &buf);
 
     /* Config gyro register 2
-     * High pass filter cut off frecuency: 1Hz
+     * High pass filter cut off frecuency: 0.02Hz
      * High pass filter mode: Normal                                    */
-    buf = GYRO_REG2_HPCF0 | GYRO_REG2_HPCF1;
+    buf = GYRO_REG2_HPCF3;
     gyroRegisterWrite(GYRO_CTRL_REG2, &buf);
 
     /* Config gyro register 4

@@ -400,7 +400,7 @@ static void ISRBlockTask( void* pvParameters )
             {
                 cntt = 0;
                 //sprintf(appData.buffer, "%d,%d,%d,%d\r\n", gyro_raw_data.x, gyro_raw_data.y, gyro_raw_data.z, gyro_raw_data.t);
-                sprintf ( appData.buffer, "%7.3f,%7.3f,%7.3f\r\n", sensor_data.x, sensor_data.y, sensor_data.dz );
+                sprintf ( appData.buffer, "%7.3f,%7.3f,%7.3f\r\n", sensor_data.x, sensor_data.y, sensor_data.z );
 
                 
                 //sprintf(appData.buffer, "%d,%d,%d,%d\r\n\r\n", adxl_raw_data.x, adxl_raw_data.y, adxl_raw_data.z, adxl_raw_data.t);

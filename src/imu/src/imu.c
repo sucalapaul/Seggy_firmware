@@ -87,19 +87,19 @@ float squared(float x){
   return x*x;
 }
 
-void IMU_GetInclination(int intervalms, SENSOR_DATA * inclination)
+void IMU_GetInclination2(int intervalms, SENSOR_DATA * inclination)
 {
     static SENSOR_DATA calibratedData;
     static float R;
     static char signRzGyro;
-    static float kGyro = 100;
+    static float kGyro = 4;
 
     IMU_GetValues ( &calibratedData );
 
     // normalize accelerometer data
-    R = calibratedData.x * calibratedData.x +
-        calibratedData.y * calibratedData.y +
-        calibratedData.z * calibratedData.z;
+    R = sqrtf ( calibratedData.x * calibratedData.x +
+                calibratedData.y * calibratedData.y +
+                calibratedData.z * calibratedData.z );
 
     calibratedData.x /= R;
     calibratedData.y /= R;
@@ -128,8 +128,8 @@ void IMU_GetInclination(int intervalms, SENSOR_DATA * inclination)
             Az.x = atan2f ( REst.x, REst.z ) * 180 / M_PI;
             Az.y = atan2f ( REst.y, REst.z ) * 180 / M_PI;
 
-            Az.x += calibratedData.dx * ( intervalms / 1000 );
-            Az.y += calibratedData.dy * ( intervalms / 1000 );
+            Az.x += ( calibratedData.dx * ( intervalms / 1000.0f ));
+            Az.y += ( calibratedData.dy * ( intervalms / 1000.0f ));
 
             signRzGyro = ( cosf ( Az.x * M_PI / 180 ) >=0 ) ? 1 : -1;
 
@@ -141,17 +141,47 @@ void IMU_GetInclination(int intervalms, SENSOR_DATA * inclination)
             RGyro.z = signRzGyro * sqrtf(1 - squared(RGyro.x) - squared(RGyro.y));
         }
     
-        REst.x = ( calibratedData.x + kGyro * RGyro.x ) / ( 1 + kGyro ); //calibratedData.x
-        REst.y = ( calibratedData.y + kGyro * RGyro.y ) / ( 1 + kGyro );
-        REst.z = ( calibratedData.z + kGyro * RGyro.z ) / ( 1 + kGyro );
+        REst.x = RGyro.x; //( calibratedData.x + kGyro * RGyro.x ) / ( 1 + kGyro ); //calibratedData.x
+        REst.y = RGyro.y; //( calibratedData.y + kGyro * RGyro.y ) / ( 1 + kGyro );
+        REst.z = RGyro.z; //( calibratedData.z + kGyro * RGyro.z ) / ( 1 + kGyro );
 
 
-        R = REst.x * REst.x + REst.y * REst.y + REst.z * REst.z;
+        inclination -> x = REst.x * REst.x;
+        inclination -> y = REst.y * REst.y;
+        inclination -> z = REst.z * REst.z;
+
+        R = sqrtf ( REst.x * REst.x + REst.y * REst.y + REst.z * REst.z );
         REst.x /= R;
         REst.y /= R;
         REst.z /= R;
+
     }
 
-    inclination -> x = atan2f ( REst.x, REst.z ) * 180 / M_PI;
-    inclination -> y = atan2f ( REst.y, REst.z ) * 180 / M_PI;
+//    inclination -> x = atan2f ( REst.x, REst.z ) * 180 / M_PI;
+//    inclination -> y = atan2f ( REst.y, REst.z ) * 180 / M_PI;
+//    inclination -> z = REst.z;
+}
+
+void IMU_GetInclination(int intervalms, SENSOR_DATA * inclination)
+{
+    static SENSOR_DATA calibratedData;
+    static float estimated_angle, accelerometer_angle, gyro_angle;
+
+    IMU_GetValues( &calibratedData );
+
+    accelerometer_angle = atan2f ( calibratedData.y, calibratedData.z ) * 180 / M_PI;
+    
+    if ( first_reading ) {
+        estimated_angle = accelerometer_angle;
+        first_reading = false;
+    }
+    else
+    {
+        gyro_angle = estimated_angle + ( calibratedData.dx * ( intervalms / 1000.0f ));
+
+        estimated_angle = gyro_angle;
+    }
+
+    inclination -> x = estimated_angle;
+    inclination -> y = calibratedData.dx;
 }
