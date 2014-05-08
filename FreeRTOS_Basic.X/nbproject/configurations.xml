@@ -9,6 +9,9 @@
           <itemPath>../src/imu/imu.h</itemPath>
           <itemPath>D:/Dropbox/segway/firmware/src/calibration.h</itemPath>
         </logicalFolder>
+        <logicalFolder name="f3" displayName="motor" projectFiles="true">
+          <itemPath>../src/motor/motor.h</itemPath>
+        </logicalFolder>
         <logicalFolder name="f1" displayName="system_config" projectFiles="true">
           <logicalFolder name="f2" displayName="pic32mx_sk" projectFiles="true">
             <itemPath>D:/Dropbox/segway/Firmware/src/system_config/pic32mx_sk/system_config.h</itemPath>
@@ -85,6 +88,9 @@
         <logicalFolder name="f2" displayName="imu" projectFiles="true">
           <itemPath>../src/imu/src/imu.c</itemPath>
           <itemPath>D:/Dropbox/segway/firmware/src/calibration.c</itemPath>
+        </logicalFolder>
+        <logicalFolder name="f3" displayName="motor" projectFiles="true">
+          <itemPath>../src/motor/motor.c</itemPath>
         </logicalFolder>
         <logicalFolder name="f1" displayName="system_config" projectFiles="true">
           <logicalFolder name="f2" displayName="pic32mx_sk" projectFiles="true">

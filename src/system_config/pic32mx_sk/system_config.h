@@ -71,6 +71,18 @@ extern "C" {
 #define GYRO_SPI_MODULE_ID   SPI_ID_4
 #define GYRO_SPI_BAUD        (1000000ul)
 
+#define MOTOR_MAX_PWM           4000
+#define MOTOR_TIMER_ID          TMR_ID_2
+#define MOTOR_OC_TIMER_SOURCE   OC_TIMER_16BIT_TMR2
+#define MOTOR_RIGTH_BW_OC_ID    OC_ID_2
+#define MOTOR_RIGTH_FW_OC_ID    OC_ID_3
+#define MOTOR_LEFT_BW_OC_ID     OC_ID_4
+#define MOTOR_LEFT_FW_OC_ID     OC_ID_5
+
+    
+
+    
+
 
 
 // *****************************************************************************
