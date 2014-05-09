@@ -62,11 +62,13 @@ void MOTOR_SetCommand( float direction, float speedf )
         speedf = -1.0f;
     }
 
+    speedf = speedf * ( MOTOR_MAX_POWER / 100.0f );
+
     speed_right = speedf * MOTOR_MAX_PWM;
     speed_left = speedf * MOTOR_MAX_PWM;
 
-    sprintf ( buffer, "%d, %d, %6.4f\r\n", speed_right, speed_left, speedf );
-    serialPrint ( buffer );
+    //sprintf ( buffer, "%d, %d, %6.4f\r\n", speed_right, speed_left, speedf );
+    //serialPrint ( buffer );
 
     if ( speed_right > 0 )
     {

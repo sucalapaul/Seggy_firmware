@@ -112,7 +112,7 @@ converted to ticks using the portTICK_RATE_MS constant. */
 #define ISRTASK_LED                     ( 2 )
 
 /* Misc. */
-#define T5PRESCALAR                     ( 6 )  //was 6
+#define T5PRESCALAR                     ( TMR_PRESCALE_VALUE_64 )
 /*-----------------------------------------------------------*/
 
 /*
@@ -344,8 +344,8 @@ unsigned long ulReceivedValue;
  */
 static void ISRBlockTask( void* pvParameters )
 {
+
         SENSOR_DATA sensor_data;
-        IMU_Init();
 
       /* local variables marked as volatile so the compiler does not optimize them away */
         APPTaskParameter_t *pxTaskParameter;
@@ -354,29 +354,60 @@ static void ISRBlockTask( void* pvParameters )
        /* Create the semaphore used to signal this task */
         vSemaphoreCreateBinary( xBlockSemaphore );
         /* Set up timer 5 to generate an interrupt every 50 ms */
-        PLIB_TMR_Counter16BitClear(TMR_ID_5);
+
+        PLIB_TMR_Counter16BitClear ( TMR_ID_5 );
+        //PLIB_TMR_Mode32BitEnable( TMR_ID_5 );
         /* Timer 5 is going to interrupt at 20Hz Hz. (40,000,000 / (64 * 20) */
-        PLIB_TMR_PrescaleSelect(TMR_ID_5, T5PRESCALAR);
-        PLIB_TMR_Period16BitSet(TMR_ID_5, pxTaskParameter->timerPeriod);
+        PLIB_TMR_PrescaleSelect ( TMR_ID_5, T5PRESCALAR);
+        PLIB_TMR_Period16BitSet ( TMR_ID_5, 12500 );
         /* Clear the interrupt as a starting condition. */
-        PLIB_INT_SourceFlagClear(INT_ID_0,INT_SOURCE_TIMER_5);
+        PLIB_INT_SourceFlagClear ( INT_ID_0,INT_SOURCE_TIMER_5 );
         /* Enable the interrupt. */
-        PLIB_INT_SourceEnable(INT_ID_0,INT_SOURCE_TIMER_5);
+        PLIB_INT_SourceEnable( INT_ID_0,INT_SOURCE_TIMER_5 );
         /* Start the timer. */
-        PLIB_TMR_Start(TMR_ID_5);
+        PLIB_TMR_Start( TMR_ID_5 );
+
+        float set_point;
+
+
+        float kp, ki, kd;
+        float p, i ,d, pid;
+        float error, previous_error;
+
+        p = 0.0f;
+        i = 0.0f;
+        d = 0.0f;
+        error = 0.0f;
+        previous_error = 0.0f;
+
+        kp = 0.2f;
+        ki = 0.01f;
+        kd = 0.02f;
+
+        set_point = -4.5f;
 
         for( ;; )
         {
             /* block on the binary semaphore given by an ISR */
             xSemaphoreTake( xBlockSemaphore, portMAX_DELAY );
 
-            IMU_GetInclination ( 25, &sensor_data );
-            MOTOR_SetCommand ( 0, sensor_data.x / 180 );
+            IMU_GetInclination ( 10, &sensor_data );
+
+            previous_error = error;
+            error = set_point - sensor_data.x;
+
+            p = error;
+            i = i + error;
+            d = error - previous_error;
+
+            pid = p * kp + i * ki + d * kd;
+
+            MOTOR_SetCommand ( 0, - pid );
 
             BSP_ToggleLED( pxTaskParameter->usLEDNumber );
 
-            //sprintf ( appData.buffer, "%7.3f,%7.3f,%7.3f\r\n", sensor_data.x, sensor_data.y, sensor_data.z );
-            //serialPrint( appData.buffer );
+            sprintf ( appData.buffer, "%7.3f,%7.3f,%7.3f\r\n", error, pid, 0 );
+            serialPrint( appData.buffer );
         }
 }
 /*-----------------------------------------------------------*/

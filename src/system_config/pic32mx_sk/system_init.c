@@ -250,6 +250,7 @@ void SYS_Initialize ( void * data )
     /* Check the usart status */
     sysStatus = DRV_USART_Status(usartModule);
 
+    IMU_Init();
     MOTOR_Initialize();
 }
 

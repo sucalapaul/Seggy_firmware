@@ -79,6 +79,9 @@ extern "C" {
 #define MOTOR_LEFT_BW_OC_ID     OC_ID_4
 #define MOTOR_LEFT_FW_OC_ID     OC_ID_5
 
+// Maximum is 100
+#define MOTOR_MAX_POWER         50
+
     
 
     
@@ -93,7 +96,7 @@ extern "C" {
 
 /* Define the size of the application's message buffer. */
 #define APP_BUFFER_SIZE         60
-#define APP_UART_BAUDRATE       9600
+#define APP_UART_BAUDRATE       57600
 #define APP_NO_OF_BYTES_TO_READ 1
 #define APP_ESC_MSG             0x1B
 
