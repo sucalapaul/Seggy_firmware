@@ -2,6 +2,7 @@
 #include "peripheral/tmr/plib_tmr.h"
 #include "peripheral/oc/plib_oc.h"
 #include "motor.h"
+#include "util.h"
 
 static int speed_right;
 static int speed_left;
@@ -49,6 +50,8 @@ void MOTOR_OC_Init ( OC_MODULE_ID module_id, OC_16BIT_TIMERS tmr )
 
 void MOTOR_SetCommand( float direction, float speedf )
 {
+    char buffer[20];
+
     if ( speedf > 1.0f )
     {
         speedf = 1.0f;
@@ -62,5 +65,24 @@ void MOTOR_SetCommand( float direction, float speedf )
     speed_right = speedf * MOTOR_MAX_PWM;
     speed_left = speedf * MOTOR_MAX_PWM;
 
-    
+    sprintf ( buffer, "%d, %d, %6.4f\r\n", speed_right, speed_left, speedf );
+    serialPrint ( buffer );
+
+    if ( speed_right > 0 )
+    {
+        PLIB_OC_PulseWidth16BitSet ( MOTOR_RIGTH_FW_OC_ID, speed_right );
+        PLIB_OC_PulseWidth16BitSet ( MOTOR_RIGTH_BW_OC_ID, 0 );
+    } else {
+        PLIB_OC_PulseWidth16BitSet ( MOTOR_RIGTH_FW_OC_ID, 0 );
+        PLIB_OC_PulseWidth16BitSet ( MOTOR_RIGTH_BW_OC_ID, -speed_right );
+    }
+
+    if ( speed_left > 0 )
+    {
+        PLIB_OC_PulseWidth16BitSet ( MOTOR_LEFT_FW_OC_ID, speed_left );
+        PLIB_OC_PulseWidth16BitSet ( MOTOR_LEFT_BW_OC_ID, 0 );
+    } else {
+        PLIB_OC_PulseWidth16BitSet ( MOTOR_LEFT_FW_OC_ID, 0 );
+        PLIB_OC_PulseWidth16BitSet ( MOTOR_LEFT_BW_OC_ID, -speed_left );
+    }
 }

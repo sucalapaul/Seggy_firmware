@@ -73,6 +73,8 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 #include "driver/usart/drv_usart.h"
 #include "gyro/gyro_io.h"
 #include "imu/imu.h"
+#include "motor/motor.h"
+#include "util.h"
 
 // *****************************************************************************
 // *****************************************************************************
@@ -342,26 +344,12 @@ unsigned long ulReceivedValue;
  */
 static void ISRBlockTask( void* pvParameters )
 {
-        /* Status of USART driver */
-        DRV_USART_CLIENT_STATUS usartStatus;
-
-        /* Status of buffer submitted to USART */
-        //DRV_USART_BUFFER_STATUS bufferStatus;
-
-//        GYRO_RAW_DATA gyro_raw_data;
-//        ADXL362_RAW_DATA adxl_raw_data;
         SENSOR_DATA sensor_data;
-
-        appData.usartHandle = DRV_USART_Open(SYS_USART_DRIVER_INDEX,
-            DRV_IO_INTENT_READWRITE);
-
-        //xl362Init();
-        //gyroInit();
         IMU_Init();
 
       /* local variables marked as volatile so the compiler does not optimize them away */
         APPTaskParameter_t *pxTaskParameter;
-       pxTaskParameter = (APPTaskParameter_t *) pvParameters;
+        pxTaskParameter = (APPTaskParameter_t *) pvParameters;
 
        /* Create the semaphore used to signal this task */
         vSemaphoreCreateBinary( xBlockSemaphore );
@@ -377,66 +365,25 @@ static void ISRBlockTask( void* pvParameters )
         /* Start the timer. */
         PLIB_TMR_Start(TMR_ID_5);
 
-        int8_t id;
-        int8_t cntt = 0;
         for( ;; )
         {
             /* block on the binary semaphore given by an ISR */
             xSemaphoreTake( xBlockSemaphore, portMAX_DELAY );
 
-            cntt++;
-            //xl362RegisterRead(XL362_PARTID, &id);
-            //xl362RawDataRead ( &adxl_raw_data );
-            //gyroRegisterRead(GYRO_WHO_AM_I, &id);
-            //gyroRawDataRead ( &gyro_raw_data );
-            //gyroRegisterRead ( GYRO_OUT_X_H, &id );
-
             IMU_GetInclination ( 25, &sensor_data );
+            MOTOR_SetCommand ( 0, sensor_data.x / 180 );
 
             BSP_ToggleLED( pxTaskParameter->usLEDNumber );
 
-            //strcpy(appData.buffer, "Salut ");
-            if ( cntt == 1 )
-            {
-                cntt = 0;
-                //sprintf(appData.buffer, "%d,%d,%d,%d\r\n", gyro_raw_data.x, gyro_raw_data.y, gyro_raw_data.z, gyro_raw_data.t);
-                sprintf ( appData.buffer, "%7.3f,%7.3f,%7.3f\r\n", sensor_data.x, sensor_data.y, sensor_data.z );
-
-                
-                //sprintf(appData.buffer, "%d,%d,%d,%d\r\n\r\n", adxl_raw_data.x, adxl_raw_data.y, adxl_raw_data.z, adxl_raw_data.t);
-                //sprintf(appData.buffer, "%d\r\n", id);
-                //appData.buffer[0] = id;
-                /* Update Buffer Size */
-                appData.bufferSize = strlen(appData.buffer);
-
-                usartStatus = DRV_USART_ClientStatus( appData.usartHandle );
-                if ( usartStatus == DRV_USART_CLIENT_STATUS_READY )
-                {
-                    /* Submit buffer to USART */
-                    DRV_USART_BufferAddWrite( appData.usartHandle,
-                                          &(appData.usartBufferHandle),
-                                          appData.buffer, appData.bufferSize );
-
-                    if ( appData.usartBufferHandle != DRV_HANDLE_INVALID )
-                    {
-                        /* Buffer is accepted. Driver will transmit. */
-                        //appData.state = APP_WAIT_FOR_DONE;
-                    }
-                    else
-                    {
-                        //appData.state = APP_ERROR;
-                    }
-                }
-
-            }
-
+            //sprintf ( appData.buffer, "%7.3f,%7.3f,%7.3f\r\n", sensor_data.x, sensor_data.y, sensor_data.z );
+            //serialPrint( appData.buffer );
         }
 }
 /*-----------------------------------------------------------*/
 
 void vT5InterruptHandler( void )
 {
-portBASE_TYPE xHigherPriorityTaskWoken = pdFALSE;
+        portBASE_TYPE xHigherPriorityTaskWoken = pdFALSE;
 
         /* This function is the handler for the peripheral timer interrupt.
          The interrupt is initially signalled in a separate assembly file
