@@ -3,7 +3,9 @@
 
 float tempRawDx, tempRawDy, tempRawDz;
 VECTOR_3D REst, RGyro, Az, inclination, prevInclination;
+SENSOR_FILTER sensorFilter;
 bool first_reading;
+
 
 int IMU_Init()
 {
@@ -41,20 +43,20 @@ void IMU_GetValues( SENSOR_DATA * values )
     gyroRawDataRead ( &gyro_raw_data );
 
     // Flip axes according to sensor physical positions
-    values -> x = (float) adxl_raw_data.x;
-    values -> y = (float) adxl_raw_data.y;
-    values -> z = (float) adxl_raw_data.z;
+    values->x = (float) adxl_raw_data.x;
+    values->y = (float) adxl_raw_data.y;
+    values->z = (float) adxl_raw_data.z;
     tempRawDx = (float) gyro_raw_data.x;
     tempRawDy = (float) gyro_raw_data.y;
     tempRawDz = (float) gyro_raw_data.z;
 
     // Calibration 
-    values -> x = ( values -> x - acc_offset_x ) * acc_scale_x;
-    values -> y = ( values -> y - acc_offset_y ) * acc_scale_y;
-    values -> z = ( values -> z - acc_offset_z ) * acc_scale_z;
-    values -> dy = ( tempRawDx - gyro_offset_x ) * gyro_scale_x;
-    values -> dx = ( tempRawDy - gyro_offset_y ) * gyro_scale_y;
-    values -> dz = ( tempRawDz - gyro_offset_z ) * gyro_scale_z;
+    values->x = ( values->x - acc_offset_x ) * acc_scale_x;
+    values->y = ( values->y - acc_offset_y ) * acc_scale_y;
+    values->z = ( values->z - acc_offset_z ) * acc_scale_z;
+    values->dy = ( tempRawDx - gyro_offset_x ) * gyro_scale_x;
+    values->dx = ( tempRawDy - gyro_offset_y ) * gyro_scale_y;
+    values->dz = ( tempRawDz - gyro_offset_z ) * gyro_scale_z;
 
     // TODO: Compensate with temperature
 }
@@ -85,6 +87,55 @@ void zeroGyro()
 
 float squared(float x){
   return x*x;
+}
+
+void lpf_update(float *state, float tc, float intervalms, float input)
+{
+  float frac = intervalms / tc;
+  if ( frac > 1.0 )
+  {
+      frac=1.0;
+  }
+  *state = input * frac + *state * (1.0-frac);
+}
+
+// Simple kalman filter
+void IMU_GetInclination3 ( int intervalms, SENSOR_FILTER * filter )
+{
+    static SENSOR_DATA calibratedData;
+    static float acc_angle, gyro_rate, angle_err;
+    static float lpf_angle, lpf_angrate;
+
+    IMU_GetValues ( &calibratedData );
+    acc_angle = atan2f ( calibratedData.y, calibratedData.z ) * 180 / M_PI;
+    gyro_rate = calibratedData.dx;
+
+    if ( first_reading )
+    {
+        // initialize with accelerometer readings
+        filter->rate_bias = gyro_rate;
+        filter->angle     = acc_angle;
+        first_reading = false;
+    }
+    else
+    {
+        filter->rate = gyro_rate - filter->rate_bias;
+        filter->angle += filter->rate * ( intervalms / 1000.0f );
+
+        filter->rate_bias += filter->rate * 0.003 * intervalms;
+
+        angle_err = acc_angle - filter->angle;
+        filter->angle += angle_err / (5.0 + filter->angle_noise);
+
+        lpf_update ( &lpf_angle, 50.0, intervalms, filter->angle );
+        lpf_update ( &lpf_angrate, 40.0, intervalms, filter->rate );
+
+        filter->angle_raw = acc_angle;
+        filter->rate_raw = gyro_rate;
+        filter->angle_lpf = lpf_angle;
+        filter->rate_lpf = lpf_angrate;
+    }
+
 }
 
 void IMU_GetInclination2(int intervalms, SENSOR_DATA * inclination)
@@ -140,15 +191,15 @@ void IMU_GetInclination2(int intervalms, SENSOR_DATA * inclination)
 
             RGyro.z = signRzGyro * sqrtf(1 - squared(RGyro.x) - squared(RGyro.y));
         }
-    
+
         REst.x = RGyro.x; //( calibratedData.x + kGyro * RGyro.x ) / ( 1 + kGyro ); //calibratedData.x
         REst.y = RGyro.y; //( calibratedData.y + kGyro * RGyro.y ) / ( 1 + kGyro );
         REst.z = RGyro.z; //( calibratedData.z + kGyro * RGyro.z ) / ( 1 + kGyro );
 
 
-        inclination -> x = REst.x * REst.x;
-        inclination -> y = REst.y * REst.y;
-        inclination -> z = REst.z * REst.z;
+        inclination->x = REst.x * REst.x;
+        inclination->y = REst.y * REst.y;
+        inclination->z = REst.z * REst.z;
 
         R = sqrtf ( REst.x * REst.x + REst.y * REst.y + REst.z * REst.z );
         REst.x /= R;
@@ -157,9 +208,9 @@ void IMU_GetInclination2(int intervalms, SENSOR_DATA * inclination)
 
     }
 
-//    inclination -> x = atan2f ( REst.x, REst.z ) * 180 / M_PI;
-//    inclination -> y = atan2f ( REst.y, REst.z ) * 180 / M_PI;
-//    inclination -> z = REst.z;
+//    inclination->x = atan2f ( REst.x, REst.z ) * 180 / M_PI;
+//    inclination->y = atan2f ( REst.y, REst.z ) * 180 / M_PI;
+//    inclination->z = REst.z;
 }
 
 void IMU_GetInclination(int intervalms, SENSOR_DATA * inclination)
@@ -170,7 +221,6 @@ void IMU_GetInclination(int intervalms, SENSOR_DATA * inclination)
 
     IMU_GetValues( &calibratedData );
 
-    accelerometer_angle = atan2f ( calibratedData.y, calibratedData.z ) * 180 / M_PI;
     
     if ( first_reading ) {
         estimated_angle = accelerometer_angle;
@@ -179,11 +229,10 @@ void IMU_GetInclination(int intervalms, SENSOR_DATA * inclination)
     else
     {
         gyro_angle = estimated_angle + ( calibratedData.dx * ( intervalms / 1000.0f ));
-
         estimated_angle = ( accelerometer_angle + kGyro * gyro_angle ) / ( 1 + kGyro );
     }
 
-    inclination -> x = estimated_angle;
-    inclination -> y = accelerometer_angle;
-    inclination -> z = gyro_angle;
+    inclination->x = estimated_angle;
+    inclination->y = accelerometer_angle;
+    inclination->z = gyro_angle;
 }

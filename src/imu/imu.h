@@ -28,6 +28,21 @@ typedef struct
     float temp;
 } SENSOR_DATA;
 
+typedef struct {
+  float angle;
+  float rate_bias;
+  float rate;
+  float angle_noise;
+
+  float rate_raw;
+  float rate_lpf;
+  float angle_raw;
+  float angle_lpf;
+
+  uint8_t rate_inited;
+  uint8_t angle_inited;
+} SENSOR_FILTER;
+
 typedef struct
 {
     float x;
@@ -38,6 +53,7 @@ typedef struct
 int IMU_Init();
 
 void IMU_GetValues( SENSOR_DATA * values );
+void IMU_GetInclination3 ( int intervalms, SENSOR_FILTER * filter );
 void zeroGyro();
 
 
