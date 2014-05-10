@@ -345,7 +345,7 @@ unsigned long ulReceivedValue;
 static void ISRBlockTask( void* pvParameters )
 {
 
-        SENSOR_DATA sensor_data;
+        //SENSOR_DATA sensor_data;
 
       /* local variables marked as volatile so the compiler does not optimize them away */
         APPTaskParameter_t *pxTaskParameter;
@@ -367,47 +367,42 @@ static void ISRBlockTask( void* pvParameters )
         /* Start the timer. */
         PLIB_TMR_Start( TMR_ID_5 );
 
-        float set_point;
-
-
-        float kp, ki, kd;
-        float p, i ,d, pid;
-        float error, previous_error;
-
-        p = 0.0f;
-        i = 0.0f;
-        d = 0.0f;
-        error = 0.0f;
-        previous_error = 0.0f;
-
-        kp = 0.2f;
-        ki = 0.01f;
-        kd = 0.02f;
-
-        set_point = -4.5f;
+//        p = 0.0f;
+//        i = 0.0f;
+//        d = 0.0f;
+//        error = 0.0f;
+//        previous_error = 0.0f;
+//
+//        kp = 0.2f;
+//        ki = 0.01f;
+//        kd = 0.02f;
+//
+//        set_point = -4.5f;
 
         for( ;; )
         {
             /* block on the binary semaphore given by an ISR */
             xSemaphoreTake( xBlockSemaphore, portMAX_DELAY );
 
-            IMU_GetInclination ( 10, &sensor_data );
+            // Task runnning at 100Hz, so 10ms interval
+            PID_Step( 10 );
+            //IMU_GetInclination ( 10, &sensor_data );
 
-            previous_error = error;
-            error = set_point - sensor_data.x;
-
-            p = error;
-            i = i + error;
-            d = error - previous_error;
-
-            pid = p * kp + i * ki + d * kd;
-
-            MOTOR_SetCommand ( 0, - pid );
-
-            BSP_ToggleLED( pxTaskParameter->usLEDNumber );
-
-            sprintf ( appData.buffer, "%7.3f,%7.3f,%7.3f\r\n", error, pid, 0 );
-            serialPrint( appData.buffer );
+//            previous_error = error;
+//            error = set_point - sensor_data.x;
+//
+//            p = error;
+//            i = i + error;
+//            d = error - previous_error;
+//
+//            pid = p * kp + i * ki + d * kd;
+//
+//            
+//
+//            BSP_ToggleLED( pxTaskParameter->usLEDNumber );
+//
+//            sprintf ( appData.buffer, "%7.3f,%7.3f,%7.3f\r\n", error, pid, 0 );
+           
         }
 }
 /*-----------------------------------------------------------*/

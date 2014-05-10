@@ -12,6 +12,9 @@
         <logicalFolder name="f3" displayName="motor" projectFiles="true">
           <itemPath>../src/motor/motor.h</itemPath>
         </logicalFolder>
+        <logicalFolder name="f4" displayName="pid_controller" projectFiles="true">
+          <itemPath>../src/pid/pid.h</itemPath>
+        </logicalFolder>
         <logicalFolder name="f1" displayName="system_config" projectFiles="true">
           <logicalFolder name="f2" displayName="pic32mx_sk" projectFiles="true">
             <itemPath>D:/Dropbox/segway/Firmware/src/system_config/pic32mx_sk/system_config.h</itemPath>
@@ -92,6 +95,9 @@
         </logicalFolder>
         <logicalFolder name="f3" displayName="motor" projectFiles="true">
           <itemPath>../src/motor/motor.c</itemPath>
+        </logicalFolder>
+        <logicalFolder name="f4" displayName="pid_controller" projectFiles="true">
+          <itemPath>../src/pid/pid.c</itemPath>
         </logicalFolder>
         <logicalFolder name="f1" displayName="system_config" projectFiles="true">
           <logicalFolder name="f2" displayName="pic32mx_sk" projectFiles="true">
