@@ -100,7 +100,7 @@ typedef struct
   Remarks:
     This routine must be called from the SYS_Initialize function.
 */
-
+float kp, ki, kd;
 void APP_Initialize ( void );
 
 

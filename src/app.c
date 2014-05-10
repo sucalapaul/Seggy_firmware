@@ -367,17 +367,14 @@ static void ISRBlockTask( void* pvParameters )
         /* Start the timer. */
         PLIB_TMR_Start( TMR_ID_5 );
 
-//        p = 0.0f;
-//        i = 0.0f;
-//        d = 0.0f;
-//        error = 0.0f;
-//        previous_error = 0.0f;
-//
-//        kp = 0.2f;
-//        ki = 0.01f;
-//        kd = 0.02f;
-//
-//        set_point = -4.5f;
+        serialInit();
+
+        // Ku = 0.1
+
+        kp = 0.02f;
+        ki = -0.08f;
+        kd = -0.033f;
+
 
         for( ;; )
         {
@@ -386,6 +383,7 @@ static void ISRBlockTask( void* pvParameters )
 
             // Task runnning at 100Hz, so 10ms interval
             PID_Step( 10 );
+
             //IMU_GetInclination ( 10, &sensor_data );
 
 //            previous_error = error;

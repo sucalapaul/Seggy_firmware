@@ -40,22 +40,21 @@ void PID_Step( int intervalms )
     static float softstart;
     static bool tipped;
     static float error, previous_error, errori, set_point;
-    static float cmd, speed_estimate;
+    static float pid, cmd, speed_estimate;
 
-    // TODO: Move these in H file!
-    static float kp, ki, kd, pid;
-    kp = 0.1f;
-    ki = 0.0f;
-    kd = 0.1f;
-
-    set_point = -4.5f;
+    set_point = -7.87f;
 
     IMU_GetInclination3 ( intervalms, &sensor_filtered );
 
     overspeed = 0.0;
     angle_corrected = sensor_filtered.angle_lpf; // + flim(0.4*overspeed + overspeed_integral, -0.4, 0.4);
 
-    if (!tipped && ( sensor_filtered.angle_lpf > 15.0 || sensor_filtered.angle_lpf < -15.0) )
+    previous_error = error;
+    error = set_point - angle_corrected;
+    errori = flim ( errori + angle_corrected * 0.1, -10.0, 10.0 );
+
+    
+    if (!tipped && ( error > 30.0 || error < -30.0) )
     {
         tipped=1;
     }
@@ -68,7 +67,7 @@ void PID_Step( int intervalms )
 
     previous_error = error;
     error = set_point - angle_corrected;
-    errori = flim ( errori + angle_corrected * 0.1, -10.0, 10.0 );
+    errori = flim ( errori + angle_corrected * 0.5, -10.0, 10.0 );
 
     pid = ( kp * error + kd * sensor_filtered.rate_lpf + ki * errori ) * softstart;
 
@@ -81,6 +80,6 @@ void PID_Step( int intervalms )
 
     MOTOR_SetCommand ( 0, - pid );
 
-    sprintf ( buffer, "%7.3f,%7.3f,%7.3f\r\n", pid, sensor_filtered.angle_lpf, error );
-    serialPrint( buffer );
+    //sprintf ( buffer, "%7.3f,%7.3f,%7.3f\r\n", error, -angle_corrected,- pid );
+    //serialPrint( buffer );
 }
