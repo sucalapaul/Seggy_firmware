@@ -252,6 +252,21 @@ void SYS_Initialize ( void * data )
 
     IMU_Init();
     MOTOR_Initialize();
+
+
+        /* Enable CN1 & Enable the global change notice module */
+//    PLIB_PORTS_PinChangeNoticeEnable(PORTS_ID_0, CN15);
+//    PLIB_PORTS_ChangeNoticeEnable(PORTS_ID_0);
+
+    /* Enable the change notice interrupt source, set its priority level to 2,
+       set its subpriority level to 0 */
+    PLIB_INT_SourceEnable(INT_ID_0, INT_SOURCE_EXTERNAL_4);
+    PLIB_INT_VectorPrioritySet(INT_ID_0, INT_VECTOR_INT4, INT_PRIORITY_LEVEL2);
+    PLIB_INT_VectorSubPrioritySet(INT_ID_0, INT_VECTOR_INT4, INT_SUBPRIORITY_LEVEL0);
+
+    /* Enable multi-vectored interrupts, enable the generation of interrupts to the CPU */
+    PLIB_INT_MultiVectorSelect(INT_ID_0);
+    PLIB_INT_Enable(INT_ID_0);
 }
 
 /*******************************************************************************/

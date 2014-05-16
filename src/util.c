@@ -54,9 +54,9 @@ void serialInit()
         DRV_USART_BufferEventHandlerSet(usartHandle, APP_BufferEventHandler, 0);
 
         /* Read data */
-        DRV_USART_BufferAddRead( usartHandle,
-                                 &(usartReadBufferHandle),
-                                 readBuffer, 1);
+//        DRV_USART_BufferAddRead( usartHandle,
+//                                 &(usartReadBufferHandle),
+//                                 readBuffer, 1);
 }
 
 void serialPrint ( char * buffer )
@@ -84,9 +84,9 @@ void serialPrint ( char * buffer )
             //appData.state = APP_ERROR;
         }
     }
-    DRV_USART_BufferAddRead( usartHandle,
-                         &(usartReadBufferHandle),
-                         readBuffer, 1);
+//    DRV_USART_BufferAddRead( usartHandle,
+//                         &(usartReadBufferHandle),
+//                         readBuffer, 1);
 }
 
 

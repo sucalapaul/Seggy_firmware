@@ -42,7 +42,7 @@ void PID_Step( int intervalms )
     static float error, previous_error, errori, set_point;
     static float pid, cmd, speed_estimate;
 
-    set_point = -7.87f;
+    set_point = 0.0f;
 
     IMU_GetInclination3 ( intervalms, &sensor_filtered );
 
