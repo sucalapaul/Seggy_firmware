@@ -371,9 +371,9 @@ static void ISRBlockTask( void* pvParameters )
 
         // Ku = 0.1
 
-        kp = 0.03f;
+        kp = 0.045f;
         ki = 0.0f;//-0.08f;
-        kd = 0.0f;//-0.033f;
+        kd = 0.002f;//-0.033f;
 
 
         for( ;; )

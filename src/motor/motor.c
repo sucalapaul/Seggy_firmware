@@ -7,6 +7,8 @@
 static int speed_right;
 static int speed_left;
 
+char buffer[30];
+
 void MOTOR_Initialize ( )
 {
     /* Setup Timer 2 - PBclk as the source, prescaler is 1:1 (PBclk / 1),
@@ -52,23 +54,35 @@ void MOTOR_OC_Init ( OC_MODULE_ID module_id, OC_16BIT_TIMERS tmr )
 
 void MOTOR_SetCommand( float direction, float speedf )
 {
+    static float ddd;
     if ( speedf > 1.0f )
     {
         speedf = 1.0f;
     }
-    
+
     if ( speedf < -1.0f )
     {
         speedf = -1.0f;
     }
 
+    if ( direction > 1.0f )
+    {
+        direction = 1.0f;
+    }
+
+    if ( direction < -1.0f )
+    {
+        direction = -1.0f;
+    }
+
     speedf = speedf * ( MOTOR_MAX_POWER / 100.0f );
+    ddd = direction / 5.0f;
 
-    speed_right = speedf * MOTOR_MAX_PWM;
-    speed_left = speedf * MOTOR_MAX_PWM;
+    speed_right = (speedf + ddd) * MOTOR_MAX_PWM;
+    speed_left = (speedf - ddd)  * MOTOR_MAX_PWM;
 
-    //sprintf ( buffer, "%d, %d, %6.4f\r\n", speed_right, speed_left, speedf );
-    //serialPrint ( buffer );
+//    sprintf ( buffer, "%d, %d, %6.4f\r\n", speed_right, speed_left, speedf );
+//    serialPrint ( buffer );
 
     if ( speed_right > 0 )
     {

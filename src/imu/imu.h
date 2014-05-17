@@ -39,6 +39,8 @@ typedef struct {
   float angle_raw;
   float angle_lpf;
 
+  float rotation;
+
   uint8_t rate_inited;
   uint8_t angle_inited;
 } SENSOR_FILTER;

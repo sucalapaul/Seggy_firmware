@@ -54,6 +54,8 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 #include "peripheral/oc/plib_oc.h"
 #include "motor/motor.h"
 
+#include "peripheral/adc/plib_adc.h"
+
 
 // ****************************************************************************
 // ****************************************************************************
@@ -267,6 +269,25 @@ void SYS_Initialize ( void * data )
     /* Enable multi-vectored interrupts, enable the generation of interrupts to the CPU */
     PLIB_INT_MultiVectorSelect(INT_ID_0);
     PLIB_INT_Enable(INT_ID_0);
+
+
+    PLIB_PORTS_PinModeSelect(PORTS_ID_0, PORTS_ANALOG_PIN_0, PORTS_PIN_MODE_ANALOG);
+                /* ADC setup - ouput in integer format, trigger mode auto, enable autosample */
+            PLIB_ADC_ResultFormatSelect(ADC_ID_1, ADC_RESULT_FORMAT_INTEGER_16BIT);
+            PLIB_ADC_SamplingModeSelect(ADC_ID_1, ADC_SAMPLING_MODE_MUXA);
+            PLIB_ADC_ConversionTriggerSourceSelect(ADC_ID_1, ADC_CONVERSION_TRIGGER_INTERNAL_COUNT);
+            PLIB_ADC_VoltageReferenceSelect(ADC_ID_1, ADC_REFERENCE_VDD_TO_AVSS );
+            PLIB_ADC_SampleAcqusitionTimeSet(ADC_ID_1, 0x01);
+            PLIB_ADC_ConversionClockSet(ADC_ID_1, SYS_CLK_FREQUENCY, 1);
+
+            /* Connect AN2 as positive input, Vref- as negative input */
+            PLIB_ADC_MuxChannel0InputPositiveSelect(ADC_ID_1, ADC_MUX_A, ADC_INPUT_POSITIVE_AN0);
+            PLIB_ADC_MuxChannel0InputNegativeSelect(ADC_ID_1, ADC_MUX_A, ADC_INPUT_NEGATIVE_VREF_MINUS);
+
+            /* Enable the ADC module */
+            PLIB_ADC_Enable(ADC_ID_1);
+
+            PLIB_ADC_SamplingStart(ADC_ID_1);
 }
 
 /*******************************************************************************/

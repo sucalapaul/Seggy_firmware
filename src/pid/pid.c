@@ -3,6 +3,8 @@
 #include "imu/imu.h"
 #include "math.h"
 
+#include "peripheral/adc/plib_adc.h"
+
 
 SENSOR_FILTER sensor_filtered;
 char buffer[30];
@@ -40,11 +42,22 @@ void PID_Step( int intervalms )
     static float softstart;
     static bool tipped;
     static float error, previous_error, errori, set_point;
-    static float pid, cmd, speed_estimate;
+    static float pid, cmd, speed_estimate, direction;
+    static int potValue;
 
     set_point = 0.0f;
 
     IMU_GetInclination3 ( intervalms, &sensor_filtered );
+
+    PLIB_ADC_SamplingStart(ADC_ID_1);
+    potValue = PLIB_ADC_ResultGetByIndex(ADC_ID_1, 0) - 500;
+    if ( potValue > -20 && potValue < 20 ) {
+        potValue = 0;
+        direction = -sensor_filtered.rotation/50.0f;
+    } else {
+        direction = (float)potValue / 1000.0f;
+        sensor_filtered.rotation = 0.0f;
+    }
 
     overspeed = 0.0;
     angle_corrected = sensor_filtered.angle_lpf; // + flim(0.4*overspeed + overspeed_integral, -0.4, 0.4);
@@ -65,10 +78,6 @@ void PID_Step( int intervalms )
         return;
     }
 
-    previous_error = error;
-    error = set_point - angle_corrected;
-    errori = flim ( errori + angle_corrected * 0.5, -10.0, 10.0 );
-
     pid = ( kp * error + kd * sensor_filtered.rate_lpf + ki * errori ) * softstart;
 
     // Adaptive gain for accelerometer
@@ -78,8 +87,10 @@ void PID_Step( int intervalms )
 
     softstart = fmin(1.0, softstart + 0.001 * intervalms);
 
-    MOTOR_SetCommand ( 0, - pid );
+    lpf_update ( &cmd, 70, intervalms, pid );
+    MOTOR_SetCommand ( direction, - cmd );
 
-    //sprintf ( buffer, "%7.3f,%7.3f,%7.3f\r\n", error, -angle_corrected,- pid );
-    //serialPrint( buffer );
+    sprintf ( buffer, "%7.3f,%7.3f,%7.3f\r\n", pid, cmd , direction
+            );
+    serialPrint( buffer );
 }
