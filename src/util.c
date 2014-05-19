@@ -37,7 +37,7 @@ void APP_BufferEventHandler(DRV_USART_BUFFER_EVENT buffEvent,
             }
             readBuffer[0] = 0;
             if ( keyPress ) {
-                sprintf ( writeBuffer, "%5.3f, %5.3f, %5.3f \r\n", kp, ki, kd );
+                sprintf ( writeBuffer, "%6.5f, %6.5f, %6.5f \r\n", kp, ki, kd );
                 serialPrint ( writeBuffer );
             }
 
