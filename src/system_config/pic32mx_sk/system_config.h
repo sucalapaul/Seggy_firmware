@@ -80,7 +80,7 @@ extern "C" {
 #define MOTOR_LEFT_FW_OC_ID     OC_ID_5
 
 // Maximum is 100
-#define MOTOR_MAX_POWER         50
+#define MOTOR_MAX_POWER         100
 
     
 

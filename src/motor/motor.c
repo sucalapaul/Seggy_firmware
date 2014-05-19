@@ -7,7 +7,7 @@
 static int speed_right;
 static int speed_left;
 
-char buffer[30];
+char buffer[50];
 
 void MOTOR_Initialize ( )
 {
