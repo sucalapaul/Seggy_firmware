@@ -120,16 +120,16 @@ void IMU_GetInclination3 ( int intervalms, SENSOR_FILTER * filter )
     }
     else
     {
-        filter->rate = gyro_rate; // - filter->rate_bias;
+        filter->rate = gyro_rate;// - filter->rate_bias;
         filter->angle += filter->rate * ( intervalms / 1000.0f );
 
         //filter->rate_bias += filter->rate * 0.003 * intervalms;
 
         angle_err = acc_angle - filter->angle;
-        filter->angle += angle_err / (50.0 + filter->angle_noise);
+        filter->angle += (angle_err * ( intervalms / 1000.0f )) / (2 + filter->angle_noise);
 
-        lpf_update ( &lpf_angle, 10.0, intervalms, filter->angle );
-        lpf_update ( &lpf_angrate, 10.0, intervalms, filter->rate );
+        lpf_update ( &lpf_angle, 50.0, intervalms, filter->angle );
+        lpf_update ( &lpf_angrate, 40.0, intervalms, filter->rate );
 
         filter->angle_raw = acc_angle;
         filter->rate_raw = gyro_rate;
